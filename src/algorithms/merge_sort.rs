@@ -1,19 +1,19 @@
 use super::{Reasons, Sorter};
 
 pub struct MergeSort {
-    partition_stack: Vec<(usize, usize, usize)>, // Stack for managing partitions
-    temp: Vec<usize>,                           // Temporary array for merging
-    reason: Reasons,                            // Reason for the current action
+    partition_stack: Vec<(usize, usize, usize)>, // Stack for managing partitions (left, right, phase)
+    temp: Vec<usize>,                           // Temporary array used for merging
+    reason: Reasons,                            // Tracks the current action (Comparing or Switching)
 }
 
 impl MergeSort {
     /// Merges two sorted halves of the array.
     fn merge(&mut self, array: &mut [usize], left: usize, mid: usize, right: usize) {
-        let mut left_idx = left;
-        let mut right_idx = mid + 1;
-        let mut temp_idx = left;
+        let mut left_idx = left;  // Index for the left half of the array
+        let mut right_idx = mid + 1; // Index for the right half of the array
+        let mut temp_idx = left;  // Index for the temporary array
 
-        // Copy the current range to the temporary array
+        // Copy the current range of the array into the temporary array
         self.temp[left..=right].copy_from_slice(&array[left..=right]);
 
         // Merge the two halves into the original array
@@ -29,146 +29,69 @@ impl MergeSort {
             temp_idx += 1;
         }
 
-        // Copy any remaining elements from the left half
+        // Copy any remaining elements from the left half into the original array
         while left_idx <= mid {
             array[temp_idx] = self.temp[left_idx];
             left_idx += 1;
             temp_idx += 1;
         }
 
-        // Remaining elements in the right half are already in place
+        // Remaining elements in the right half are already in place, so no action needed.
     }
 }
 
 impl Sorter for MergeSort {
     fn new() -> Self {
         MergeSort {
-            partition_stack: vec![],
-            temp: Vec::new(),
-            reason: Reasons::Comparing,
+            partition_stack: vec![], // Initialize with an empty stack for partitions
+            temp: Vec::new(),        // Initialize the temporary array as empty
+            reason: Reasons::Comparing, // Set the initial reason to "Comparing"
         }
     }
 
     fn special(&self) -> (usize, usize) {
+        // In MergeSort, there aren't specific elements being compared in each step,
+        // so we return MAX values for the indices.
         (usize::MAX, usize::MAX)
     }
 
     fn reason(&self) -> Reasons {
-        self.reason
+        self.reason // Return the current reason for the action (Comparing or Switching)
     }
 
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         if self.temp.is_empty() {
+            // If the temporary array is empty, initialize it with the current array
             self.temp = array.clone();
+            // Push the initial partition (whole array) to the stack
             self.partition_stack.push((0, array.len() - 1, 0));
         }
 
         if let Some((left, right, phase)) = self.partition_stack.pop() {
             if phase == 0 {
+                // Phase 0: Partition the array further by dividing it into two halves
                 if left < right {
                     let mid = (left + right) / 2;
-                    self.partition_stack.push((left, right, 1)); // Done with partitioning
+                    self.partition_stack.push((left, right, 1)); // Mark the partition as complete (phase 1)
                     self.partition_stack.push((mid + 1, right, 0)); // Sort the right half
                     self.partition_stack.push((left, mid, 0)); // Sort the left half
                 }
             } else if phase == 1 {
+                // Phase 1: Merge the two halves
                 let mid = (left + right) / 2;
                 self.merge(array, left, mid, right);
-                self.reason = Reasons::Switching; // Indicate switching after merge
+                self.reason = Reasons::Switching; // Indicate that switching occurred during merge
             }
         } else {
-            return true; // Sorting is complete
+            return true; // Sorting is complete when the stack is empty
         }
 
-        false
+        false // Continue sorting
     }
 
     fn reset_state(&mut self) {
-        self.partition_stack.clear();
-        self.temp.clear();
-        self.reason = Reasons::Comparing;
+        self.partition_stack.clear(); // Clear the stack
+        self.temp.clear();             // Clear the temporary array
+        self.reason = Reasons::Comparing; // Reset the reason to "Comparing"
     }
-
-      
-
-     
-}
-
-pub struct BubbleSort {
-    pass: usize,             // Tracks the current pass through the array.
-    index: Option<usize>,    // Tracks the current index being compared, wrapped in an Option.
-    needs_switch: bool,      // Indicates if a swap is needed.
-    action_reason: Reasons,  // Tracks the reason for the current action.
-}
-
-impl Sorter for BubbleSort {
-    fn new() -> Self {
-        BubbleSort {
-            pass: 0,
-            index: None,
-            needs_switch: false,
-            action_reason: Reasons::Comparing,
-        }
-    }
-
-    fn step(&mut self, array: &mut Vec<usize>) -> bool {
-        let len = array.len();
-
-        // Check if the sorting is complete.
-        if self.pass == len - 1 {
-            return true; // Sorting is complete.
-        }
-
-        // Determine the current index or initialize it.
-        if let Some(idx) = self.index {
-            if idx < len - self.pass - 1 {
-                self.index = Some(idx + 1); // Move to the next pair.
-            } else {
-                self.pass += 1; // Move to the next pass.
-                self.index = Some(0); // Reset index for the next pass.
-            }
-        } else {
-            self.index = Some(0); // Initialize index for the first step.
-        }
-
-        // Perform the comparison and determine if a swap is needed.
-        if let Some(idx) = self.index {
-            if idx + 1 < len {
-                self.needs_switch = array[idx] > array[idx + 1];
-                self.action_reason = if self.needs_switch {
-                    Reasons::Switching
-                } else {
-                    Reasons::Comparing
-                };
-
-                // Perform the swap if necessary.
-                if self.needs_switch {
-                    array.swap(idx, idx + 1);
-                    self.needs_switch = false; // Reset the flag after the swap.
-                }
-            }
-        }
-        self.add_delay();
-        false // Continue sorting.
-    }
-
-    fn reset_state(&mut self) {
-        *self = Self::new();
-    }
-
-    fn special(&self) -> (usize, usize) {
-        if let Some(idx) = self.index {
-            (idx, idx + 1)
-        } else {
-            (usize::MAX, usize::MAX)
-        }
-    }
-
-    fn reason(&self) -> Reasons {
-        self.action_reason
-    }
-
-  
-
-     
 }

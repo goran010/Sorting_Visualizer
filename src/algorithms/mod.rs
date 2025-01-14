@@ -29,7 +29,7 @@ pub trait Sorter {
     // Function to add delay to slow down the sorting process
     fn add_delay(&self) {
         // Add a small delay of 200 milliseconds to make the sorting process visible
-        let delay = time::Duration::from_millis(50);
+        let delay = time::Duration::from_millis(30);
         thread::sleep(delay);
     }
 }
