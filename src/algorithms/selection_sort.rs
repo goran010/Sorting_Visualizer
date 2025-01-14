@@ -43,13 +43,5 @@ impl Sorter for SelectionSort {
 
     fn reset_state(&mut self) {
         self.current_index = 0;
-    }
-
-    fn switch(&mut self, array: &mut Vec<usize>) {
-        array.swap(self.current_index, self.min_index);
-    }
-
-    fn modify_state(&mut self, _: &[usize]) -> bool {
-        false
-    }
+    }    
 }

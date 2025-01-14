@@ -51,15 +51,5 @@ impl Sorter for InsertionSort {
         self.comparison_index = 1;
         self.reason = Reasons::Comparing;
     }
-
-    fn switch(&mut self, array: &mut Vec<usize>) {
-        if self.comparison_index > 0 && array[self.comparison_index - 1] > array[self.comparison_index] {
-            // Swap elements if necessary
-            array.swap(self.comparison_index - 1, self.comparison_index);
-        }
-    }
-
-    fn modify_state(&mut self, _: &[usize]) -> bool {
-        false // Not used in InsertionSort.
-    }
+   
 }

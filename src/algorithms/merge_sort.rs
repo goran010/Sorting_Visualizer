@@ -89,11 +89,9 @@ impl Sorter for MergeSort {
         self.reason = Reasons::Comparing;
     }
 
-    fn switch(&mut self, _: &mut Vec<usize>) {}
+      
 
-    fn modify_state(&mut self, _: &[usize]) -> bool {
-        false
-    }
+     
 }
 
 pub struct BubbleSort {
@@ -170,11 +168,7 @@ impl Sorter for BubbleSort {
         self.action_reason
     }
 
-    fn modify_state(&mut self, _: &[usize]) -> bool {
-        false // Not used in BubbleSort.
-    }
+  
 
-    fn switch(&mut self, _: &mut Vec<usize>) {
-        // Swaps are handled directly in `step`.
-    }
+     
 }

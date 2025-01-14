@@ -90,12 +90,4 @@ impl Sorter for HeapSort {
         self.root = usize::MAX;
         self.reason = Reasons::Comparing;
     }
-
-    /// Handles switching elements; not explicitly needed for HeapSort.
-    fn switch(&mut self, _: &mut Vec<usize>) {}
-
-    /// Modifies the internal state; not explicitly needed for HeapSort.
-    fn modify_state(&mut self, _: &[usize]) -> bool {
-        false
-    }
 }

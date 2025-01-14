@@ -85,12 +85,4 @@ impl Sorter for QuickSort {
         self.partition_stack.clear();
         self.reason = Reasons::Comparing;
     }
-
-    /// Handles switching elements; QuickSort does not need explicit switching here.
-    fn switch(&mut self, _: &mut Vec<usize>) {}
-
-    /// Modifies the internal state (QuickSort does not use this function).
-    fn modify_state(&mut self, _: &[usize]) -> bool {
-        false
-    }
 }

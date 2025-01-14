@@ -25,8 +25,6 @@ pub trait Sorter {
     fn step(&mut self, array: &mut Vec<usize>) -> bool;
 
     fn reset_state(&mut self);
-    fn switch(&mut self, array: &mut Vec<usize>);
-    fn modify_state(&mut self, array: &[usize]) -> bool;
 
     // Function to add delay to slow down the sorting process
     fn add_delay(&self) {

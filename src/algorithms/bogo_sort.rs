@@ -48,9 +48,7 @@ impl Sorter for BogoSort {
         self.reason = Reasons::Comparing;
     }
 
-    fn switch(&mut self, _: &mut Vec<usize>) {}
+      
 
-    fn modify_state(&mut self, _: &[usize]) -> bool {
-        false
-    }
+     
 }
