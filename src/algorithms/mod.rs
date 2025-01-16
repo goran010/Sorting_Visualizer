@@ -24,5 +24,6 @@ pub trait Sorter {
     fn step(&mut self, array: &mut Vec<usize>) -> bool;
 
     fn reset_state(&mut self);
+    fn is_finished(&self) -> bool; 
 }
 

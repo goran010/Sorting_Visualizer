@@ -46,7 +46,6 @@ impl Sorter for InsertionSort {
         // Set up for the next iteration: start comparing the next element in the array
         self.comparison_index = self.current_index; // Reset the comparison index to the current index
         self.reason = Reasons::Comparing; // We are now comparing the next pair
-            // Optional: Add a small delay to slow down the sorting process for visualization
         false // Continue sorting
     }
 
@@ -55,5 +54,10 @@ impl Sorter for InsertionSort {
         self.current_index = 1;  // Start from the second element
         self.comparison_index = 1; // Compare the second and first element
         self.reason = Reasons::Comparing; // Start with a comparison
+    }
+
+    // Check if the sorting is finished
+    fn is_finished(&self) -> bool {
+        self.current_index >= 1 // Check if all elements have been processed
     }
 }

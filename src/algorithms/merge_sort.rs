@@ -94,4 +94,8 @@ impl Sorter for MergeSort {
         self.temp.clear();             // Clear the temporary array
         self.reason = Reasons::Comparing; // Reset the reason to "Comparing"
     }
+
+    fn is_finished(&self) -> bool {
+        self.partition_stack.is_empty() // Sorting is finished when the stack is empty
+    }
 }

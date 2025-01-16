@@ -75,9 +75,6 @@ impl Sorter for QuickSort {
                     self.partition_stack.push((pivot + 1, high)); // Right partition (elements after the pivot)
                 }
 
-                // Add delay to slow down the sorting process (useful for visualization)
-                   
-
                 // Continue sorting the left and right parts
                 return false; // Sorting is not complete yet, so return false
             }
@@ -91,5 +88,10 @@ impl Sorter for QuickSort {
     fn reset_state(&mut self) {
         self.partition_stack.clear(); // Clear the stack
         self.reason = Reasons::Comparing; // Reset the reason to "Comparing"
+    }
+
+    /// Checks if the QuickSort process is finished.
+    fn is_finished(&self) -> bool {
+        self.partition_stack.is_empty() // Sorting is finished if the stack is empty
     }
 }

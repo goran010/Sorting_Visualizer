@@ -4,6 +4,7 @@ pub struct SelectionSort {
     current_index: usize, // Tracks the current index in the array that we're processing.
     min_index: usize,     // Tracks the index of the minimum value found during the current pass.
     reason: Reasons,      // Tracks the reason for the current action, either comparing or switching.
+    is_sorted: bool,      // Tracks whether the sorting is complete.
 }
 
 impl Sorter for SelectionSort {
@@ -13,6 +14,7 @@ impl Sorter for SelectionSort {
             current_index: 0,  // Start from the first element in the array.
             min_index: 0,      // The first element is initially assumed to be the smallest.
             reason: Reasons::Comparing, // Initially, the action is comparing.
+            is_sorted: false,  // Initially, the sorting is not complete.
         }
     }
 
@@ -30,7 +32,8 @@ impl Sorter for SelectionSort {
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         // If the current index is beyond the last element, the sorting is complete.
         if self.current_index >= array.len() {
-            return true;  // Sorting is complete.
+            self.is_sorted = true;  // Mark the sorting as complete.
+            return true;  // Indicate that sorting is complete.
         }
 
         // Assume the current element is the smallest in the remaining unsorted portion.
@@ -52,14 +55,17 @@ impl Sorter for SelectionSort {
         // After a swap, the reason is updated to "Switching" to indicate that a swap happened.
         self.reason = Reasons::Switching;
 
-        // Add a delay to slow down the sorting process (useful for visualization).
-           
-
         false  // Sorting isn't complete yet, so return false.
     }
 
     // Resets the state of the SelectionSort algorithm, setting the current index to 0.
     fn reset_state(&mut self) {
         self.current_index = 0;  // Start again from the beginning of the array.
+        self.is_sorted = false;  // Reset the sorted state.
+    }
+
+    // Returns whether the sorting process is complete.
+    fn is_finished(&self) -> bool {
+        self.is_sorted
     }
 }

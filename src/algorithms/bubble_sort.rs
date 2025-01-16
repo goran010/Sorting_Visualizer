@@ -5,6 +5,7 @@ pub struct BubbleSort {
     index: Option<usize>,    // Tracks the current index being compared, wrapped in an Option.
     needs_switch: bool,      // Indicates if a swap is needed between two elements.
     action_reason: Reasons,  // Tracks the reason for the current action (Comparing or Switching).
+    finished: bool,          // Indicates if the sorting is finished.
 }
 
 impl Sorter for BubbleSort {
@@ -15,6 +16,7 @@ impl Sorter for BubbleSort {
             index: None,           // No index is set initially.
             needs_switch: false,   // No swap needed initially.
             action_reason: Reasons::Comparing, // The action is "Comparing" initially.
+            finished: false,       // Sorting is not finished initially.
         }
     }
 
@@ -22,9 +24,10 @@ impl Sorter for BubbleSort {
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         let len = array.len();
 
-        // Check if the sorting is complete. If `pass` reaches the length of the array, sorting is complete.
+        // Check if the sorting is complete.
         if self.pass == len - 1 {
-            return true; // Sorting is complete.
+            self.finished = true; // Mark the sorting as finished.
+            return true;          // Sorting is complete.
         }
 
         // Determine the current index or initialize it if it's the first time.
@@ -57,9 +60,6 @@ impl Sorter for BubbleSort {
             }
         }
 
-        // Add a small delay to make the sorting process slower (for visualization purposes).
-
-
         false // Continue sorting by returning false (not complete yet).
     }
 
@@ -80,5 +80,10 @@ impl Sorter for BubbleSort {
     // Returns the current reason for the sorting action (either "Comparing" or "Switching").
     fn reason(&self) -> Reasons {
         self.action_reason // Return the current action reason.
+    }
+
+    // Returns whether the sorting process is complete.
+    fn is_finished(&self) -> bool {
+        self.finished
     }
 }

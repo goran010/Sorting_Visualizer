@@ -58,4 +58,9 @@ impl Sorter for BogoSort {
         self.is_sorted = false;  // Reset the sorting state to unsorted.
         self.reason = Reasons::Comparing;  // Reset the reason to "Comparing".
     }
+
+    // Returns whether the sorting process is complete.
+    fn is_finished(&self) -> bool {
+        self.is_sorted
+    }
 }

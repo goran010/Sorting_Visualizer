@@ -27,7 +27,6 @@ impl HeapSort {
             array.swap(self.root, child); // Swap the root with the larger child
             self.root = child; // Update the root to the new child
             self.reason = Reasons::Switching; // Indicate that a swap occurred
-               // Slow down the sorting process (for visualization)
             return false; // Continue sifting down
         }
 
@@ -47,7 +46,6 @@ impl Sorter for HeapSort {
     }
 
     /// Returns the special indices involved in the current operation.
-    /// This method returns the current root index and `usize::MAX` since we're not comparing specific elements in heap sort.
     fn special(&self) -> (usize, usize) {
         (self.root, usize::MAX)
     }
@@ -58,7 +56,6 @@ impl Sorter for HeapSort {
     }
 
     /// Performs one step of the HeapSort algorithm.
-    /// It either builds the heap or sorts the array by extracting the root and sifting down.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         if self.index == usize::MAX {
             // First step: Build the heap
@@ -96,5 +93,10 @@ impl Sorter for HeapSort {
         self.index = usize::MAX; // Reset index to an invalid value
         self.root = usize::MAX;  // Reset root to an invalid value
         self.reason = Reasons::Comparing; // Reset reason to comparing
+    }
+
+    /// Checks if the sorting process is finished.
+    fn is_finished(&self) -> bool {
+        self.index == 0 // Sorting is finished when the index reaches 0
     }
 }
