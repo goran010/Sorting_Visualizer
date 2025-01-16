@@ -6,7 +6,7 @@ mod util;
 
 fn main() {
     let native_options = NativeOptions {
-        initial_window_size: Some(Vec2::new(990., 710.)),
+        initial_window_size: Some(Vec2::new(1500., 710.)),
         ..Default::default()
     };
     run_native(

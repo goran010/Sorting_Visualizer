@@ -31,7 +31,7 @@ enum Algorithms {
 
 /// Constants for UI configuration.
 const BAR_HEIGHT_MULTIPLIER: usize = 32;
-const BAR_WIDTH: f32 = 2.0;
+const BAR_WIDTH: f32 = 6.9;
 const CORNER_ROUNDING: f32 = 2.0;
 const GRID_ID: &str = "numbers";
 const STEP_DELAY: Duration = Duration::from_millis(20);
@@ -91,13 +91,13 @@ impl Visualizer<'_> {
                 } else {
                     Color32::GRAY
                 };
-                Self::draw_bar_helper(value.to_string(), size, color, ui);
+                Self::draw_bar_helper(size, color, ui);
             }
         });
     }
 
     /// Helper function to draw a single bar with its label.
-    fn draw_bar_helper(label: String, size: Vec2, color: Color32, ui: &mut Ui) {
+    fn draw_bar_helper(size: Vec2, color: Color32, ui: &mut Ui) {
     Grid::new(GRID_ID)
         .spacing(vec2(1.0, 1.0)) // Minimal spacing between grid cells
         .show(ui, |ui| {
@@ -114,11 +114,6 @@ impl Visualizer<'_> {
                     color,
                     Stroke::NONE,
                 );
-
-                // Optionally display labels for wider bars
-                if size.x > 6.0 {
-                    ui.label(egui::RichText::new(label).size(8.0)); // Smaller label text
-                }
             });
         });
 }
