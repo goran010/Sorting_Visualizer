@@ -11,7 +11,7 @@ use crate::util;
 use buttons::ButtonHandler;
 use eframe::{
     egui::{self, Button, CentralPanel, ComboBox, Grid, Sense, Ui},
-    epaint::{vec2, Color32, Rect, Stroke, Vec2},
+    epaint::{vec2, Color32, Stroke, Vec2},
 };
 use std::{thread, time::Duration};
 use strum::IntoEnumIterator;
@@ -33,9 +33,7 @@ enum Algorithms {
 const BAR_HEIGHT_MULTIPLIER: usize = 32;
 const BAR_WIDTH: f32 = 2.0;
 const CORNER_ROUNDING: f32 = 2.0;
-const BORDER_WIDTH: f32 = 0.2;
 const GRID_ID: &str = "numbers";
-const BORDER_COLOR: Color32 = Color32::WHITE;
 const STEP_DELAY: Duration = Duration::from_millis(20);
 const BASELINE: f32 = 700.0;
 
@@ -114,7 +112,7 @@ impl Visualizer<'_> {
                     rect,
                     CORNER_ROUNDING,
                     color,
-                    Stroke::none(),
+                    Stroke::NONE,
                 );
 
                 // Optionally display labels for wider bars
