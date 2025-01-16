@@ -76,7 +76,7 @@ impl Sorter for QuickSort {
                 }
 
                 // Add delay to slow down the sorting process (useful for visualization)
-                self.add_delay();
+                   
 
                 // Continue sorting the left and right parts
                 return false; // Sorting is not complete yet, so return false

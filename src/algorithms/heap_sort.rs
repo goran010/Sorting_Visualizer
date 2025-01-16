@@ -27,7 +27,7 @@ impl HeapSort {
             array.swap(self.root, child); // Swap the root with the larger child
             self.root = child; // Update the root to the new child
             self.reason = Reasons::Switching; // Indicate that a swap occurred
-            self.add_delay(); // Slow down the sorting process (for visualization)
+               // Slow down the sorting process (for visualization)
             return false; // Continue sifting down
         }
 

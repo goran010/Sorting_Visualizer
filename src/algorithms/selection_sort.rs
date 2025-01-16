@@ -53,7 +53,7 @@ impl Sorter for SelectionSort {
         self.reason = Reasons::Switching;
 
         // Add a delay to slow down the sorting process (useful for visualization).
-        self.add_delay();
+           
 
         false  // Sorting isn't complete yet, so return false.
     }

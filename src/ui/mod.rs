@@ -30,12 +30,10 @@ enum Algorithms {
 }
 
 /// Constants for UI configuration.
-const CENTRALIZE_PADDING: f32 = 300.0;
-const PADDING: f32 = 10.0;
 const BAR_HEIGHT_MULTIPLIER: usize = 32;
-const BAR_WIDTH: f32 = 16.0;
-const CORNER_ROUNDING: f32 = 5.0;
-const BORDER_WIDTH: f32 = 0.5;
+const BAR_WIDTH: f32 = 2.0;
+const CORNER_ROUNDING: f32 = 2.0;
+const BORDER_WIDTH: f32 = 0.2;
 const GRID_ID: &str = "numbers";
 const BORDER_COLOR: Color32 = Color32::WHITE;
 const STEP_DELAY: Duration = Duration::from_millis(20);
@@ -83,7 +81,6 @@ impl Visualizer<'_> {
         let operation_reason = self.sorter.reason();
 
         ui.horizontal_top(|ui| {
-            ui.add_space(PADDING);
             for (index, &value) in self.numbers.iter().enumerate() {
                 let height = (value * BAR_HEIGHT_MULTIPLIER) as f32;
                 let size = vec2(BAR_WIDTH, BASELINE - height);
@@ -98,33 +95,36 @@ impl Visualizer<'_> {
                 };
                 Self::draw_bar_helper(value.to_string(), size, color, ui);
             }
-            ui.add_space(PADDING);
         });
     }
 
     /// Helper function to draw a single bar with its label.
     fn draw_bar_helper(label: String, size: Vec2, color: Color32, ui: &mut Ui) {
-        Grid::new(GRID_ID).show(ui, |ui| {
-            ui.vertical_centered(|ui| {
+    Grid::new(GRID_ID)
+        .spacing(vec2(1.0, 1.0)) // Minimal spacing between grid cells
+        .show(ui, |ui| {
+            ui.vertical(|ui| {
+                // Allocate space for the bar
                 let mut rect = ui.allocate_exact_size(size, Sense::hover()).0;
                 rect.set_top(size.y);
                 rect.set_bottom(BASELINE);
 
-                let label_position = Rect::from_two_pos(
-                    egui::pos2(rect.min.x, rect.min.y - 20.0),
-                    egui::pos2(rect.max.x, rect.min.y - 10.0),
-                );
-                ui.put(label_position, egui::Label::new(label));
-
+                // Draw the bar
                 ui.painter().rect(
                     rect,
                     CORNER_ROUNDING,
                     color,
-                    Stroke::new(BORDER_WIDTH, BORDER_COLOR),
+                    Stroke::none(),
                 );
+
+                // Optionally display labels for wider bars
+                if size.x > 6.0 {
+                    ui.label(egui::RichText::new(label).size(8.0)); // Smaller label text
+                }
             });
         });
-    }
+}
+
 
     /// Handles the algorithm selection dropdown.
     fn handle_algorithm_selection(&mut self, ui: &mut Ui) -> bool {
@@ -200,7 +200,6 @@ impl eframe::App for Visualizer<'_> {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ui.add_space(CENTRALIZE_PADDING);
                 if self.handle_algorithm_selection(ui) {
                     self.switch_algorithm();
                 }
@@ -208,7 +207,6 @@ impl eframe::App for Visualizer<'_> {
             });
 
             self.handle_running();
-            ui.add_space(PADDING);
             self.draw_bars(ui);
         });
     }

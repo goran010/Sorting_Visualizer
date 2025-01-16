@@ -46,7 +46,7 @@ impl Sorter for InsertionSort {
         // Set up for the next iteration: start comparing the next element in the array
         self.comparison_index = self.current_index; // Reset the comparison index to the current index
         self.reason = Reasons::Comparing; // We are now comparing the next pair
-        self.add_delay();  // Optional: Add a small delay to slow down the sorting process for visualization
+            // Optional: Add a small delay to slow down the sorting process for visualization
         false // Continue sorting
     }
 

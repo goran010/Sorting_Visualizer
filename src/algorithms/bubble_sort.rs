@@ -58,7 +58,7 @@ impl Sorter for BubbleSort {
         }
 
         // Add a small delay to make the sorting process slower (for visualization purposes).
-        self.add_delay();
+
 
         false // Continue sorting by returning false (not complete yet).
     }

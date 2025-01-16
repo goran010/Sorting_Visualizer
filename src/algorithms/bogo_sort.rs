@@ -50,9 +50,6 @@ impl Sorter for BogoSort {
             self.reason = Reasons::Comparing;  // If sorted, set the reason to "Comparing" (though no comparisons are needed).
         }
 
-        // Add a delay to slow down the sorting process (for visualization or debugging).
-        self.add_delay();
-
         false  // Sorting is not complete yet, so return false.
     }
 
