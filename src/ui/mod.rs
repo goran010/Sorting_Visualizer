@@ -13,7 +13,7 @@ use eframe::{
     egui::{self, Button, CentralPanel, ComboBox, Grid, Sense, Ui},
     epaint::{vec2, Color32, Stroke, Vec2},
 };
-use std::{thread, time::Duration};
+use std::{thread, time::{Duration, Instant}};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
@@ -52,6 +52,7 @@ pub(crate) struct Visualizer<'a> {
     original_numbers: Vec<usize>,
     state: State,
     sorter: Box<dyn Sorter + 'a>,
+    start_time: Option<Instant>, // Timer field
 }
 
 impl<'a> Default for Visualizer<'a> {
@@ -63,6 +64,7 @@ impl<'a> Default for Visualizer<'a> {
             original_numbers: numbers,
             state: State::Start,
             sorter: Box::new(BubbleSort::new()),
+            start_time: None, // Initialize as None
         }
     }
 }
@@ -82,8 +84,9 @@ impl Visualizer<'_> {
             for (index, &value) in self.numbers.iter().enumerate() {
                 let height = (value * BAR_HEIGHT_MULTIPLIER) as f32;
                 let size = vec2(BAR_WIDTH, BASELINE - height);
-                let color = if self.state != State::Finished && 
-                            (index == highlighted_indices.0 || index == highlighted_indices.1) {
+                let color = if self.state != State::Finished
+                    && (index == highlighted_indices.0 || index == highlighted_indices.1)
+                {
                     match operation_reason {
                         Reasons::Comparing => Color32::LIGHT_YELLOW,
                         Reasons::Switching => Color32::LIGHT_GREEN,
@@ -98,26 +101,20 @@ impl Visualizer<'_> {
 
     /// Helper function to draw a single bar with its label.
     fn draw_bar_helper(size: Vec2, color: Color32, ui: &mut Ui) {
-    Grid::new(GRID_ID)
-        .spacing(vec2(1.0, 1.0)) // Minimal spacing between grid cells
-        .show(ui, |ui| {
-            ui.vertical(|ui| {
-                // Allocate space for the bar
-                let mut rect = ui.allocate_exact_size(size, Sense::hover()).0;
-                rect.set_top(size.y);
-                rect.set_bottom(BASELINE);
+        Grid::new(GRID_ID)
+            .spacing(vec2(1.0, 1.0)) // Minimal spacing between grid cells
+            .show(ui, |ui| {
+                ui.vertical(|ui| {
+                    // Allocate space for the bar
+                    let mut rect = ui.allocate_exact_size(size, Sense::hover()).0;
+                    rect.set_top(size.y);
+                    rect.set_bottom(BASELINE);
 
-                // Draw the bar
-                ui.painter().rect(
-                    rect,
-                    CORNER_ROUNDING,
-                    color,
-                    Stroke::NONE,
-                );
+                    // Draw the bar
+                    ui.painter().rect(rect, CORNER_ROUNDING, color, Stroke::NONE);
+                });
             });
-        });
-}
-
+    }
 
     /// Handles the algorithm selection dropdown.
     fn handle_algorithm_selection(&mut self, ui: &mut Ui) -> bool {
@@ -161,6 +158,7 @@ impl Visualizer<'_> {
         } else {
             if ui.add(Button::new("Start")).clicked() {
                 self.state = State::Running;
+                self.start_time = Some(Instant::now()); // Reset the timer when sorting starts
             }
             if ui.add(Button::new("Step")).clicked() {
                 ButtonHandler::handle_step(self);
@@ -168,6 +166,7 @@ impl Visualizer<'_> {
         }
         if ui.add(Button::new("Reset")).clicked() {
             ButtonHandler::handle_reset(self);
+            self.start_time = None; // Clear the timer
         }
         if ui.add(Button::new("Shuffle")).clicked() {
             ButtonHandler::handle_shuffle(self);
@@ -177,6 +176,9 @@ impl Visualizer<'_> {
     /// Handles continuous steps when in the running state.
     fn handle_running(&mut self) {
         if self.state == State::Running {
+            if self.start_time.is_none() {
+                self.start_time = Some(Instant::now()); // Set start time when sorting begins
+            }
             thread::sleep(STEP_DELAY);
             ButtonHandler::handle_step(self);
         }
@@ -186,11 +188,28 @@ impl Visualizer<'_> {
     fn reset(&mut self) {
         self.state = State::Start;
         self.sorter.reset_state();
+        self.start_time = None; // Reset the timer
     }
 }
 
 impl eframe::App for Visualizer<'_> {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Add a top panel for the timer
+        egui::TopBottomPanel::top("timer_panel").show(ctx, |ui| {
+            ui.horizontal(|ui| {
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
+                    // Calculate elapsed time
+                    let elapsed = if let Some(start_time) = self.start_time {
+                        Instant::now().duration_since(start_time)
+                    } else {
+                        Duration::ZERO
+                    };
+                    ui.label(format!("Elapsed Time: {:.2}s", elapsed.as_secs_f64())); // Display elapsed time
+                });
+            });
+        });
+
+        // Main central panel for buttons and visualization
         CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if self.handle_algorithm_selection(ui) {
@@ -204,3 +223,4 @@ impl eframe::App for Visualizer<'_> {
         });
     }
 }
+
