@@ -1,5 +1,6 @@
 use super::{Sorter, Reasons};
 
+/// Represents the BubbleSort algorithm and its state.
 pub struct BubbleSort {
     pass: usize,             // Tracks the current pass through the array.
     index: Option<usize>,    // Tracks the current index being compared, wrapped in an Option.
@@ -9,7 +10,7 @@ pub struct BubbleSort {
 }
 
 impl Sorter for BubbleSort {
-    // Initializes a new instance of BubbleSort with initial values.
+    /// Initializes a new instance of BubbleSort with initial values.
     fn new() -> Self {
         BubbleSort {
             pass: 0,               // Start with the first pass.
@@ -20,7 +21,14 @@ impl Sorter for BubbleSort {
         }
     }
 
-    // Executes a single step of the BubbleSort algorithm.
+    /// Executes a single step of the BubbleSort algorithm.
+    /// 
+    /// # Arguments
+    /// * `array` - A mutable reference to the array being sorted.
+    /// 
+    /// # Returns
+    /// * `true` if sorting is complete.
+    /// * `false` if sorting is still in progress.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         let len = array.len();
 
@@ -63,12 +71,15 @@ impl Sorter for BubbleSort {
         false // Continue sorting by returning false (not complete yet).
     }
 
-    // Resets the state of BubbleSort, allowing the sorting to start fresh.
+    /// Resets the state of BubbleSort, allowing the sorting to start fresh.
     fn reset_state(&mut self) {
         *self = Self::new(); // Reset all fields to their initial state.
     }
 
-    // Returns the current indices of the elements being compared or swapped.
+    /// Returns the current indices of the elements being compared or swapped.
+    /// 
+    /// # Returns
+    /// A tuple `(current_index, next_index)` representing the indices of the elements being compared.
     fn special(&self) -> (usize, usize) {
         if let Some(idx) = self.index {
             (idx, idx + 1) // Return the current index and the next index being compared.
@@ -77,12 +88,18 @@ impl Sorter for BubbleSort {
         }
     }
 
-    // Returns the current reason for the sorting action (either "Comparing" or "Switching").
+    /// Returns the current reason for the sorting action.
+    /// 
+    /// # Returns
+    /// The `Reasons` enum indicating the current operation (Comparing or Switching).
     fn reason(&self) -> Reasons {
         self.action_reason // Return the current action reason.
     }
 
-    // Returns whether the sorting process is complete.
+    /// Returns whether the sorting process is complete.
+    /// 
+    /// # Returns
+    /// `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {
         self.finished
     }

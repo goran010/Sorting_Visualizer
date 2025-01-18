@@ -1,68 +1,87 @@
 use super::{Reasons, Sorter};
 
+/// Represents the InsertionSort algorithm and its state.
 pub struct InsertionSort {
-    current_index: usize, // Tracks the current index in the array that we're processing.
+    current_index: usize, // Tracks the current index in the array being processed.
     sorted_index: usize,  // Tracks the index of the last sorted element.
-    reason: Reasons,      // Tracks the reason for the current action, either comparing or inserting.
-    is_sorted: bool,      // Tracks whether the sorting is complete.
+    reason: Reasons,      // The reason for the current action (e.g., Comparing or Inserting).
+    is_sorted: bool,      // Indicates whether the sorting is complete.
 }
 
 impl Sorter for InsertionSort {
-    // Creates a new instance of InsertionSort with initial values.
+    /// Creates a new instance of the InsertionSort algorithm with initial values.
     fn new() -> Self {
         InsertionSort {
-            current_index: 1,  // Start from the second element in the array.
+            current_index: 1,  // Sorting starts from the second element in the array.
             sorted_index: 0,   // The first element is initially considered sorted.
-            reason: Reasons::Comparing, // Initially, the action is comparing.
-            is_sorted: false,  // Initially, the sorting is not complete.
+            reason: Reasons::Comparing, // Initial action is set to "Comparing".
+            is_sorted: false,  // Initially, the sorting process is not complete.
         }
     }
 
-    // Returns the indices that are currently being compared or moved.
+    /// Returns the indices currently being compared or moved.
+    /// 
+    /// # Returns
+    /// A tuple of `(current_index, sorted_index)` representing the indices involved.
     fn special(&self) -> (usize, usize) {
-        (self.current_index, self.sorted_index)  // These are the indices of the current and sorted elements.
+        (self.current_index, self.sorted_index) // Return the indices of the current and sorted elements.
     }
 
-    // Returns the reason for the current operation (Comparing or Inserting).
+    /// Returns the reason for the current operation.
+    /// 
+    /// # Returns
+    /// The `Reasons` enum indicating whether the current action is Comparing or Inserting.
     fn reason(&self) -> Reasons {
-        self.reason  // Will return either "Comparing" or "Inserting" depending on the current action.
+        self.reason // Return the current reason for the operation.
     }
 
-    // Executes a single step of the InsertionSort algorithm.
+    /// Executes a single step of the InsertionSort algorithm.
+    /// 
+    /// # Arguments
+    /// * `array` - A mutable reference to the array being sorted.
+    /// 
+    /// # Returns
+    /// * `true` if sorting is complete.
+    /// * `false` if sorting is still in progress.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
-        // If the current index reaches the end of the array, the sorting is complete.
+        // Check if the current index has reached the end of the array.
         if self.current_index >= array.len() {
-            self.is_sorted = true;  // Mark the sorting as complete.
-            return true;  // Indicate that sorting is complete.
+            self.is_sorted = true; // Mark the sorting as complete.
+            return true; // Indicate that the sorting process is finished.
         }
 
-        let mut i = self.current_index; // Start with the current index.
+        let mut i = self.current_index; // Initialize with the current index.
 
-        // Compare and insert the element into the sorted portion of the array.
+        // Compare and insert the element into the correct position in the sorted portion.
         while i > 0 && array[i] < array[i - 1] {
-            array.swap(i, i - 1);  // Swap the elements to maintain sorted order.
-            i -= 1;  // Move to the previous element in the sorted portion.
+            array.swap(i, i - 1); // Swap elements to maintain sorted order.
+            i -= 1; // Move to the previous element in the sorted portion.
 
-            // After a swap, the reason is updated to "Comparing".
+            // Update the reason to "Comparing" after each swap.
             self.reason = Reasons::Comparing;
         }
 
-        // Move to the next element in the array for the next iteration.
+        // Move to the next element for the next iteration.
         self.current_index += 1;
 
-        // After inserting the element in its correct position, update the reason.
+        // Update the reason to "Switching" after insertion.
         self.reason = Reasons::Switching;
 
-        false  // Sorting isn't complete yet, so return false.
+        false // Sorting is not complete yet, so return false.
     }
 
-    // Resets the state of the InsertionSort algorithm, setting the current index to 1.
+    /// Resets the state of the InsertionSort algorithm.
+    /// 
+    /// Resets `current_index` to 1 and marks the sorting process as not complete.
     fn reset_state(&mut self) {
-        self.current_index = 1;  // Start again from the second element of the array.
-        self.is_sorted = false;  // Reset the sorted state.
+        self.current_index = 1; // Reset to the second element.
+        self.is_sorted = false; // Mark the sorting as incomplete.
     }
 
-    // Returns whether the sorting process is complete.
+    /// Checks whether the sorting process is complete.
+    /// 
+    /// # Returns
+    /// `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {
         self.is_sorted
     }

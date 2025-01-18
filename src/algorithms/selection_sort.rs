@@ -1,5 +1,6 @@
 use super::{Reasons, Sorter};
 
+/// Represents the SelectionSort algorithm and its state.
 pub struct SelectionSort {
     current_index: usize, // Tracks the current index in the array that we're processing.
     min_index: usize,     // Tracks the index of the minimum value found during the current pass.
@@ -8,7 +9,7 @@ pub struct SelectionSort {
 }
 
 impl Sorter for SelectionSort {
-    // Creates a new instance of SelectionSort with initial values.
+    /// Creates a new instance of SelectionSort with initial values.
     fn new() -> Self {
         SelectionSort {
             current_index: 0,  // Start from the first element in the array.
@@ -18,17 +19,30 @@ impl Sorter for SelectionSort {
         }
     }
 
-    // Returns the indices that are currently being compared or swapped.
+    /// Returns the indices that are currently being compared or swapped.
+    /// 
+    /// # Returns
+    /// A tuple `(current_index, min_index)` representing the indices involved in the operation.
     fn special(&self) -> (usize, usize) {
         (self.current_index, self.min_index)  // These are the indices of the current element and the minimum element.
     }
 
-    // Returns the reason for the current operation (Comparing or Switching).
+    /// Returns the reason for the current operation (Comparing or Switching).
+    /// 
+    /// # Returns
+    /// The `Reasons` enum indicating the current operation.
     fn reason(&self) -> Reasons {
         self.reason  // Will return either "Comparing" or "Switching" depending on the current action.
     }
 
-    // Executes a single step of the SelectionSort algorithm.
+    /// Executes a single step of the SelectionSort algorithm.
+    /// 
+    /// # Arguments
+    /// * `array` - A mutable reference to the array being sorted.
+    /// 
+    /// # Returns
+    /// * `true` if sorting is complete.
+    /// * `false` if sorting is still in progress.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         // If the current index is beyond the last element, the sorting is complete.
         if self.current_index >= array.len() {
@@ -41,6 +55,7 @@ impl Sorter for SelectionSort {
 
         // Iterate through the unsorted portion of the array to find the smallest element.
         for j in (self.current_index + 1)..array.len() {
+            self.reason = Reasons::Comparing; // Update reason to "Comparing" during iteration.
             if array[j] < array[self.min_index] {  // If a smaller element is found...
                 self.min_index = j;  // Update the index of the smallest element.
             }
@@ -58,13 +73,16 @@ impl Sorter for SelectionSort {
         false  // Sorting isn't complete yet, so return false.
     }
 
-    // Resets the state of the SelectionSort algorithm, setting the current index to 0.
+    /// Resets the state of the SelectionSort algorithm, setting the current index to 0.
     fn reset_state(&mut self) {
         self.current_index = 0;  // Start again from the beginning of the array.
         self.is_sorted = false;  // Reset the sorted state.
     }
 
-    // Returns whether the sorting process is complete.
+    /// Returns whether the sorting process is complete.
+    /// 
+    /// # Returns
+    /// `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {
         self.is_sorted
     }

@@ -60,6 +60,7 @@ pub(crate) struct Visualizer<'a> {
 }
 
 impl<'a> Default for Visualizer<'a> {
+    /// Creates a default instance of the Visualizer with BubbleSort as the initial algorithm.
     fn default() -> Self {
         // Generate a random vector of numbers for sorting.
         let numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);

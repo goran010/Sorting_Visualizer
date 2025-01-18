@@ -4,7 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# GUI framework for Rust used to create the visualizer
 eframe = "0.21"
+
+# Random number generation library for generating random vectors
 rand = "0.8.5"
+
+# Library for deriving Enum iteration and other utilities
 strum = "0.24"
+
+# Derive macros for Strum to simplify Enum operations
 strum_macros = "0.24"
