@@ -206,8 +206,6 @@ impl Visualizer<'_> {
 }
 
 
-
-
     /// Resets the visualizer to its initial state.
     fn reset(&mut self) {
     self.state = State::Start;
