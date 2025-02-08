@@ -1,0 +1,18 @@
+Poboljšanja za aplikaciju vizualizacije sortiranja u Rustu
+1. Dodati zvučne efekte
+
+2. Istaknuti usporedbe i zamjene, različite boje za stupce koji se uspoređuju i one koji se zamjenjuju
+
+5. Uključiti više algoritama za usporedbu, poput Radix Sorta.
+
+6. Dopustiti unos vlastitih nizova brojeva 
+
+7. Prikazati statistike tijekom ili nakon sortiranja, poput broja usporedbi, broja zamjena i vremena potrebnog za sortiranje.
+
+8. Različite teme (npr. tamni način rada, svijetli način rada ili šarene teme) i omogućiti korisnicima prilagodbu boja.
+
+9. Kontrole u stvarnom vremenu,  gumb za pauziranje, nastavak, korak-po-korak pregled algoritma ili ponovno pokretanje vizualizacije.
+
+11. Integracija s vanjskim podacima, učitavanje nizova iz datoteka (npr. .txt ili .csv) i vizualizirajte sortiranje stvarnih podataka.
+
+16. Adaptivna vizualizacija na temelju veličine zaslona ili preferencija korisnika. Automatski skaliranje visine stupaca
