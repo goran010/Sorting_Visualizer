@@ -3,6 +3,7 @@ use eframe::{epaint::Vec2, run_native, NativeOptions};
 mod algorithms;
 mod ui;
 mod util;
+mod types; 
 
 /// The entry point for the sorting algorithm visualizer application.
 fn main() {
