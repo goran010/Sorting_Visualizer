@@ -11,6 +11,7 @@ pub enum Algorithms {
     Bogo,
     Quick,
     Heap,
+    Counting
 }
 
 /// Enum representing the state of the visualizer.

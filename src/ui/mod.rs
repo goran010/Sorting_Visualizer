@@ -5,7 +5,7 @@ use strum::IntoEnumIterator;
 use self::constants::{CEIL, FLOOR, VECTOR_SIZE};
 use crate::algorithms::{
     bogo_sort::BogoSort, bubble_sort::BubbleSort, heap_sort::HeapSort, insertion_sort::InsertionSort,
-    merge_sort::MergeSort, quick_sort::QuickSort, selection_sort::SelectionSort, Reasons, Sorter,
+    merge_sort::MergeSort, quick_sort::QuickSort, selection_sort::SelectionSort,counting_sort::CountingSort, Reasons, Sorter,
 };
 use crate::util;
 use buttons::ButtonHandler;
@@ -100,6 +100,7 @@ impl Visualizer<'_> {
             Algorithms::Bogo => Box::new(BogoSort::new()),
             Algorithms::Heap => Box::new(HeapSort::new()),
             Algorithms::Quick => Box::new(QuickSort::new()),
+            Algorithms::Counting => Box::new(CountingSort::new()),
         };
         self.reset();
     }
