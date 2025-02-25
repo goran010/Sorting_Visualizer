@@ -1,4 +1,5 @@
 use super::{Reasons, Sorter};
+use crate::sound::play_beep; 
 
 /// Represents the QuickSort algorithm and its state.
 pub struct QuickSort {
@@ -33,6 +34,7 @@ impl QuickSort {
         // After processing, swap the pivot to its correct position (i-th index)
         array.swap(i, high);
         self.reason = Reasons::Switching; // Indicate switching after pivot placement
+        play_beep();
         i // Return the pivot index
     }
 }

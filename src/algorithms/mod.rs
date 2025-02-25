@@ -7,8 +7,7 @@ pub mod quick_sort;
 pub mod selection_sort;
 pub mod counting_sort;
 
-/// Enum representing the reasons for sorting actions.
-/// 
+/// Enum representing the reasons for sorting actions. 
 /// # Variants
 /// * `Comparing` - Indicates that elements are being compared.
 /// * `Switching` - Indicates that elements are being swapped.
@@ -21,9 +20,7 @@ pub enum Reasons {
 /// A trait representing the behavior of a sorting algorithm.
 pub trait Sorter {
     /// Creates a new instance of the sorting algorithm.
-    /// 
-    /// # Returns
-    /// A new instance of the sorter.
+    /// # Returns a new instance of the sorter.
     fn new() -> Self
     where
         Self: Sized;

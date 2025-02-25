@@ -1,4 +1,5 @@
 use super::{Sorter, Reasons};
+use crate::sound::play_beep; 
 
 /// A struct representing the MergeSort algorithm.
 /// It maintains the state of the sorting process, including subarray size, index, and a temporary array for merging.
@@ -103,6 +104,7 @@ impl Sorter for MergeSort {
         if mid < end {
             self.merge(array, start, mid, end);
             self.reason = Reasons::Switching; // Indicate that elements were switched.
+            play_beep();
         }
 
         self.index += 2 * self.size; // Move to the next pair of subarrays.

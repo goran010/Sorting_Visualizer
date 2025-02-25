@@ -1,5 +1,6 @@
 use rand::prelude::SliceRandom; // Import the SliceRandom trait to shuffle the array
 use super::{Sorter, Reasons};
+use crate::sound::play_beep; 
 
 /// Represents the BogoSort algorithm and its state.
 pub struct BogoSort {
@@ -65,6 +66,7 @@ impl Sorter for BogoSort {
         if !self.is_sorted {
             array.shuffle(&mut rand::thread_rng()); // Shuffle the array randomly.
             self.reason = Reasons::Switching;  // Indicate that elements have been shuffled (switched).
+            play_beep();
         } else {
             self.reason = Reasons::Comparing;  // If sorted, set the reason to "Comparing" (though no comparisons are needed).
         }

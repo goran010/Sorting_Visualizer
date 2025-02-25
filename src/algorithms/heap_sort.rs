@@ -1,4 +1,5 @@
 use super::{Reasons, Sorter};
+use crate::sound::play_beep; 
 
 /// Represents the HeapSort algorithm and its state.
 pub struct HeapSort {
@@ -35,6 +36,7 @@ impl HeapSort {
             array.swap(self.root, child); // Swap the root with the larger child.
             self.root = child; // Update the root to the new child.
             self.reason = Reasons::Switching; // Indicate that a swap occurred.
+            play_beep();
             return false; // Continue sifting down.
         }
 

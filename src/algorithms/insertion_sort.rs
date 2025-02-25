@@ -1,4 +1,5 @@
 use super::{Reasons, Sorter};
+use crate::sound::play_beep; 
 
 /// Represents the InsertionSort algorithm and its state.
 pub struct InsertionSort {
@@ -66,6 +67,7 @@ impl Sorter for InsertionSort {
 
         // Update the reason to "Switching" after insertion.
         self.reason = Reasons::Switching;
+        play_beep();
 
         false // Sorting is not complete yet, so return false.
     }

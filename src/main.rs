@@ -4,6 +4,8 @@ mod algorithms;
 mod ui;
 mod util;
 mod types; 
+mod sound;
+
 
 /// The entry point for the sorting algorithm visualizer application.
 fn main() {

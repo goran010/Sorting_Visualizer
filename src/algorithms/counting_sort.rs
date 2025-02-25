@@ -1,4 +1,5 @@
 use super::{Sorter, Reasons};
+use crate::sound::play_beep; 
 
 /// Represents the CountingSort algorithm and its state.
 pub struct CountingSort {
@@ -66,6 +67,7 @@ impl Sorter for CountingSort {
                         array[self.array_index] = self.current_value;
                         self.counts[self.current_value] -= 1;
                         self.reason = Reasons::Switching;
+                        play_beep();
                         self.array_index += 1;
                         return false;
                     } else {

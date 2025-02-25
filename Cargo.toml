@@ -15,3 +15,8 @@ strum = "0.24"
 
 # Derive macros for Strum to simplify Enum operations
 strum_macros = "0.24"
+
+#sound effects
+rodio = "0.17"
+
+

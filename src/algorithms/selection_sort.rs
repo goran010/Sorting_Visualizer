@@ -1,4 +1,5 @@
 use super::{Reasons, Sorter};
+use crate::sound::play_beep; 
 
 /// Represents the SelectionSort algorithm and its state.
 pub struct SelectionSort {
@@ -69,6 +70,7 @@ impl Sorter for SelectionSort {
 
         // After a swap, the reason is updated to "Switching" to indicate that a swap happened.
         self.reason = Reasons::Switching;
+        play_beep();
 
         false  // Sorting isn't complete yet, so return false.
     }

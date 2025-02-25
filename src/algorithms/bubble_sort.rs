@@ -1,4 +1,7 @@
 use super::{Sorter, Reasons};
+use crate::sound::play_beep;
+
+
 
 /// Represents the BubbleSort algorithm and its state.
 pub struct BubbleSort {
@@ -30,6 +33,7 @@ impl Sorter for BubbleSort {
     /// * `true` if sorting is complete.
     /// * `false` if sorting is still in progress.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
+        play_beep();
         let len = array.len();
 
         // Check if the sorting is complete.
@@ -62,6 +66,7 @@ impl Sorter for BubbleSort {
 
                 // Perform the swap if necessary.
                 if self.needs_switch {
+                    play_beep(); 
                     array.swap(idx, idx + 1); // Swap the elements at `idx` and `idx + 1`.
                     self.needs_switch = false; // Reset the flag after the swap.
                 }
