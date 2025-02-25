@@ -1,7 +1,7 @@
 Poboljšanja za aplikaciju vizualizacije sortiranja u Rustu
 
 Goran
-1. Dodati zvučne efekte
+1. Dodati zvučne efekte -riješeno
 
 2. Istaknuti usporedbe i zamjene, različite boje za stupce koji se uspoređuju i one koji se zamjenjuju
 
@@ -17,7 +17,7 @@ Petar
 
 6. Različite teme (npr. tamni način rada, svijetli način rada ili šarene teme) i omogućiti korisnicima prilagodbu boja.
 
-7. Kontrole u stvarnom vremenu,  gumb za pauziranje, nastavak, korak-po-korak pregled algoritma ili ponovno pokretanje vizualizacije.
+7. Kontrole u stvarnom vremenu,  gumb za pauziranje, nastavak, korak-po-korak pregled algoritma ili ponovno pokretanje vizualizacije. - ovo bi trebalo biti riješeno
 
 8. Integracija s vanjskim podacima, učitavanje nizova iz datoteka (npr. .txt ili .csv) i vizualizirajte sortiranje stvarnih podataka.
 
