@@ -8,7 +8,7 @@ use self::constants::{CEIL, FLOOR, Theme, VECTOR_SIZE};
 use crate::algorithms::{
     Reasons, Sorter, bogo_sort::BogoSort, bubble_sort::BubbleSort, counting_sort::CountingSort,
     heap_sort::HeapSort, insertion_sort::InsertionSort, merge_sort::MergeSort,
-    quick_sort::QuickSort, selection_sort::SelectionSort,
+    quick_sort::QuickSort, selection_sort::SelectionSort, cocktail_sort::CocktailSort,
 };
 use crate::types::{Algorithms, BAR_HEIGHT_MULTIPLIER, BASELINE, STEP_DELAY, State};
 use crate::util;
@@ -150,6 +150,7 @@ impl Visualizer<'_> {
             Algorithms::Heap => Box::new(HeapSort::new()),
             Algorithms::Quick => Box::new(QuickSort::new()),
             Algorithms::Counting => Box::new(CountingSort::new()),
+            Algorithms::Cocktail => Box::new(CocktailSort::new()),
         };
         self.reset();
     }
