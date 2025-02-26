@@ -9,6 +9,8 @@ use crate::algorithms::{
     Reasons, Sorter, bogo_sort::BogoSort, bubble_sort::BubbleSort, counting_sort::CountingSort,
     heap_sort::HeapSort, insertion_sort::InsertionSort, merge_sort::MergeSort,
     quick_sort::QuickSort, selection_sort::SelectionSort, cocktail_sort::CocktailSort,
+    gnome_sort::GnomeSort, pancake_sort::PancakeSort, shell_sort::ShellSort,
+    comb_sort::CombSort, odd_even_sort::OddEvenSort,
 };
 use crate::types::{Algorithms, STEP_DELAY, State};
 use crate::util;
@@ -157,6 +159,11 @@ impl Visualizer<'_> {
             Algorithms::Quick => Box::new(QuickSort::new()),
             Algorithms::Counting => Box::new(CountingSort::new()),
             Algorithms::Cocktail => Box::new(CocktailSort::new()),
+            Algorithms::Gnome => Box::new(GnomeSort::new()),
+            Algorithms::Pancake => Box::new(PancakeSort::new()),
+            Algorithms::Shell => Box::new(ShellSort::new()),
+            Algorithms::Comb => Box::new(CombSort::new()),
+            Algorithms::OddEven => Box::new(OddEvenSort::new()),
         };
         self.reset();
     }

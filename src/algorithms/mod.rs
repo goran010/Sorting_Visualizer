@@ -7,6 +7,11 @@ pub mod merge_sort;
 pub mod quick_sort;
 pub mod selection_sort;
 pub mod cocktail_sort;
+pub mod gnome_sort;
+pub mod pancake_sort;
+pub mod shell_sort;
+pub mod comb_sort;
+pub mod odd_even_sort;
 
 /// Enum representing the reasons for sorting actions.
 /// # Variants

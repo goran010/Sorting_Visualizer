@@ -13,6 +13,11 @@ pub enum Algorithms {
     Heap,
     Counting,
     Cocktail,
+    Gnome,
+    Pancake,
+    Shell,
+    Comb,
+    OddEven,
 }
 
 /// Enum representing the state of the visualizer.
