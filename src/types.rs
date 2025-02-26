@@ -12,6 +12,7 @@ pub enum Algorithms {
     Quick,
     Heap,
     Counting,
+    Cocktail,
 }
 
 /// Enum representing the state of the visualizer.
