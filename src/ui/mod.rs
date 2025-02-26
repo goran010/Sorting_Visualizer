@@ -14,8 +14,8 @@ use crate::types::{Algorithms, BAR_HEIGHT_MULTIPLIER, BASELINE, STEP_DELAY, Stat
 use crate::util;
 use buttons::ButtonHandler;
 use eframe::{
-    egui::{self, Button, ComboBox, Grid, Sense, Ui},
-    epaint::{Color32, Stroke, Vec2, vec2},
+    egui::{self, Button, ComboBox, Ui},
+    epaint::{Color32, vec2},
 };
 use std::{thread, time::Instant};
 
@@ -65,7 +65,7 @@ impl Visualizer<'_> {
     fn draw_bars(&self, ui: &mut Ui) {
         let window_width = ui.available_width();
         let num_bars = self.numbers.len().max(1); // Prevent division by zero
-        let spacing = 2.0; // Space between bars
+        let spacing = 4.0; // Space between bars
         let total_spacing = spacing * (num_bars - 1) as f32;
         let bar_width = ((window_width - total_spacing) / num_bars as f32).max(2.0); // Ensure minimum width
 
@@ -79,7 +79,7 @@ impl Visualizer<'_> {
             let color = self.get_bar_color(index);
             let rect = egui::Rect::from_min_size(egui::pos2(x, y), vec2(bar_width, height));
 
-            painter.rect_filled(rect, 0.0, color);
+            painter.rect_filled(rect, 4.0, color);
         }
     }
 
