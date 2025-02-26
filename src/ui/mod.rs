@@ -2,20 +2,19 @@ mod buttons;
 pub mod constants;
 use strum::IntoEnumIterator;
 
-use self::constants::{CEIL, FLOOR, VECTOR_SIZE};
+use self::constants::{CEIL, FLOOR, VECTOR_SIZE, Theme};
 use crate::algorithms::{
     bogo_sort::BogoSort, bubble_sort::BubbleSort, heap_sort::HeapSort, insertion_sort::InsertionSort,
-    merge_sort::MergeSort, quick_sort::QuickSort, selection_sort::SelectionSort,counting_sort::CountingSort, Reasons, Sorter,
+    merge_sort::MergeSort, quick_sort::QuickSort, selection_sort::SelectionSort, counting_sort::CountingSort, Reasons, Sorter,
 };
 use crate::util;
 use buttons::ButtonHandler;
 use eframe::{
-    egui::{self, Button, CentralPanel, ComboBox, Grid, Sense, Ui},
+    egui::{self, Button, ComboBox, Grid, Sense, Ui},
     epaint::{vec2, Color32, Stroke, Vec2},
 };
 use std::{thread, time::Instant};
 use crate::types::{Algorithms, State, BAR_HEIGHT_MULTIPLIER, BAR_WIDTH, STEP_DELAY, BASELINE};
-
 
 /// Main structure managing the visualizer's state, data, and behavior.
 pub(crate) struct Visualizer<'a> {
@@ -26,10 +25,11 @@ pub(crate) struct Visualizer<'a> {
     sorter: Box<dyn Sorter + 'a>, // The sorting algorithm instance.
     start_time: Option<Instant>, // Timer tracking the start of sorting.
     total_elapsed_time: f64, // Total elapsed time of the sorting process.
+    selected_theme: Theme, // The currently selected theme.
 }
 
 impl<'a> Default for Visualizer<'a> {
-    /// Creates a default instance of the visualizer with the Bubble Sort algorithm.
+    /// Creates a default instance of the visualizer with the Bubble Sort algorithm and dark theme.
     fn default() -> Self {
         let numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
         Self {
@@ -40,13 +40,16 @@ impl<'a> Default for Visualizer<'a> {
             sorter: Box::new(BubbleSort::new()),
             start_time: None,
             total_elapsed_time: 0.0,
+            selected_theme: Theme::Dark, // Default theme is dark
         }
     }
 }
 
 impl Visualizer<'_> {
     /// Creates a new instance of the visualizer.
-    pub(crate) fn new(_cc: &eframe::CreationContext<'_>) -> Self { Self::default() }
+    pub(crate) fn new(_cc: &eframe::CreationContext<'_>) -> Self {
+        Self::default()
+    }
 
     /// Draws the bars representing the current state of the array.
     fn draw_bars(&self, ui: &mut Ui) {
@@ -61,8 +64,13 @@ impl Visualizer<'_> {
     /// Determines the color of a bar based on the sorting state and indices.
     fn get_bar_color(&self, index: usize) -> Color32 {
         if self.state != State::Finished && (index == self.sorter.special().0 || index == self.sorter.special().1) {
-            match self.sorter.reason() { Reasons::Comparing => Color32::LIGHT_YELLOW, Reasons::Switching => Color32::LIGHT_GREEN }
-        } else { Color32::GRAY }
+            match self.sorter.reason() {
+                Reasons::Comparing => Color32::LIGHT_YELLOW,
+                Reasons::Switching => Color32::LIGHT_GREEN,
+            }
+        } else {
+            self.selected_theme.bar_color() // Bar color based on the selected theme
+        }
     }
 
     /// Helper function to draw a single bar.
@@ -81,16 +89,34 @@ impl Visualizer<'_> {
     fn handle_algorithm_selection(&mut self, ui: &mut Ui) -> bool {
         let previous = self.selected_algorithm;
         ui.label("Algorithm:");
-        ComboBox::from_id_source(0)
+        ComboBox::from_id_source("algorithm_selector")
             .selected_text(format!("{:?} Sort", self.selected_algorithm))
             .show_ui(ui, |ui| {
                 Algorithms::iter().for_each(|alg| {
                     ui.selectable_value(&mut self.selected_algorithm, alg, format!("{:?} Sort", alg));
                 });
             });
-        if previous != self.selected_algorithm { self.switch_algorithm(); true } else { false }
+        if previous != self.selected_algorithm {
+            self.switch_algorithm();
+            true
+        } else {
+            false
+        }
     }
-     /// Switches the current sorting algorithm and resets the visualizer.
+
+    /// Handles the selection of a theme from the dropdown menu.
+    fn handle_theme_selection(&mut self, ui: &mut Ui) {
+        ui.label("Theme:");
+        ComboBox::from_id_source("theme_selector")
+            .selected_text(format!("{:?}", self.selected_theme))
+            .show_ui(ui, |ui| {
+                for theme in [Theme::Dark, Theme::Light, Theme::Summer, Theme::Autumn, Theme::Winter, Theme::Spring] {
+                    ui.selectable_value(&mut self.selected_theme, theme, format!("{:?}", theme));
+                }
+            });
+    }
+
+    /// Switches the current sorting algorithm and resets the visualizer.
     fn switch_algorithm(&mut self) {
         self.sorter = match self.selected_algorithm {
             Algorithms::Bubble => Box::new(BubbleSort::new()),
@@ -108,17 +134,25 @@ impl Visualizer<'_> {
     /// Creates the control buttons for the visualizer (Start, Step, Reset, Shuffle).
     fn create_control_buttons(&mut self, ui: &mut Ui) {
         if self.state == State::Running {
-            if ui.add(Button::new("Stop")).clicked() { self.state = State::Start; }
+            if ui.add(Button::new("Stop")).clicked() {
+                self.state = State::Start;
+            }
             ui.add_enabled(false, Button::new("Step"));
         } else {
             if ui.add(Button::new("Start")).clicked() {
                 self.state = State::Running;
                 self.start_time = Some(Instant::now());
             }
-            if ui.add(Button::new("Step")).clicked() { ButtonHandler::handle_step(self); }
+            if ui.add(Button::new("Step")).clicked() {
+                ButtonHandler::handle_step(self);
+            }
         }
-        if ui.add(Button::new("Reset")).clicked() { ButtonHandler::handle_reset(self); }
-        if ui.add(Button::new("Shuffle")).clicked() { ButtonHandler::handle_shuffle(self); }
+        if ui.add(Button::new("Reset")).clicked() {
+            ButtonHandler::handle_reset(self);
+        }
+        if ui.add(Button::new("Shuffle")).clicked() {
+            ButtonHandler::handle_shuffle(self);
+        }
     }
 
     /// Handles continuous sorting steps while in the "Running" state.
@@ -126,9 +160,18 @@ impl Visualizer<'_> {
         if self.state == State::Running {
             thread::sleep(STEP_DELAY);
             ButtonHandler::handle_step(self);
-            if self.sorter.is_finished() { self.state = State::Finished; }
+    
+            // Update the elapsed time and check if the sorting is finished
+            if let Some(start) = self.start_time {
+                self.total_elapsed_time = start.elapsed().as_secs_f64(); // Time in seconds
+            }
+    
+            if self.sorter.is_finished() {
+                self.state = State::Finished;
+            }
         }
     }
+
     /// Resets the visualizer state and timer.
     fn reset(&mut self) {
         self.state = State::Start;
@@ -137,30 +180,35 @@ impl Visualizer<'_> {
         self.total_elapsed_time = 0.0;
     }
 }
-/// Updates the UI and handles events in the visualizer.
+
 impl eframe::App for Visualizer<'_> {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        if self.state == State::Running {
-            if let Some(start_time) = self.start_time {
-                let now = Instant::now();
-                self.total_elapsed_time += now.duration_since(start_time).as_secs_f64();
-                self.start_time = Some(now);
-            }
-        }
-
+        ctx.request_repaint(); // UI refresh request
+    
+        let mut style = (*ctx.style()).clone();
+        style.visuals.panel_fill = self.selected_theme.background_color();
+        ctx.set_style(style);
+    
         egui::TopBottomPanel::top("timer_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
-                    ui.label(format!("Elapsed Time: {:.2}s", self.total_elapsed_time));
+                    ui.label(
+                        egui::RichText::new(format!("Elapsed Time: {:.2}s", self.total_elapsed_time))
+                            .color(self.selected_theme.text_color()),
+                    );
                 });
             });
         });
-
-        CentralPanel::default().show(ctx, |ui| {
+    
+        egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
-                if self.handle_algorithm_selection(ui) { self.switch_algorithm(); }
+                if self.handle_algorithm_selection(ui) {
+                    self.switch_algorithm();
+                }
+                self.handle_theme_selection(ui);
                 self.create_control_buttons(ui);
             });
+    
             self.handle_running();
             self.draw_bars(ui);
         });

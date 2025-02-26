@@ -6,7 +6,6 @@ mod util;
 mod types; 
 mod sound;
 
-
 /// The entry point for the sorting algorithm visualizer application.
 fn main() {
     // Define the native options for the application window.
@@ -17,7 +16,7 @@ fn main() {
 
     // Run the application using the `Visualizer` defined in the `ui` module.
     run_native(
-        "Visualizer", // The title of the application window.
+        "Sorting Visualizer", // The title of the application window.
         native_options, // The native options defined above.
         Box::new(|cc| Box::new(ui::Visualizer::new(cc))), // Create a new Visualizer instance.
     )

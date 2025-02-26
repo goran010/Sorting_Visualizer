@@ -1,12 +1,11 @@
 use crate::ui;
 use ui::*;
-
 use super::constants::{CEIL, FLOOR, VECTOR_SIZE};
 
 pub struct ButtonHandler;
 
 impl ButtonHandler {
-    /// If not finished, takes a single step within the selected algorithm
+    /// If not finished, takes a single step within the selected algorithm.
     /// Else, resets the app state.
     pub(crate) fn handle_step(app: &mut Visualizer) {
         if app.state != State::Finished && app.sorter.step(&mut app.numbers) {
@@ -23,11 +22,10 @@ impl ButtonHandler {
         app.numbers = app.original_numbers.clone();
     }
 
-    /// Resets `app` state, generates new numbers and update the initial state.
+    /// Resets `app` state, generates new numbers, and updates the initial state.
     pub(crate) fn handle_shuffle(app: &mut Visualizer) {
         app.reset();
         app.numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
         app.original_numbers = app.numbers.clone();
     }
 }
-
