@@ -26,12 +26,18 @@ pub(crate) struct Visualizer<'a> {
     start_time: Option<Instant>, // Timer tracking the start of sorting.
     total_elapsed_time: f64, // Total elapsed time of the sorting process.
     selected_theme: Theme, // The currently selected theme.
+    user_input: String,
 }
 
 impl<'a> Default for Visualizer<'a> {
     /// Creates a default instance of the visualizer with the Bubble Sort algorithm and dark theme.
     fn default() -> Self {
         let numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
+        let numbers_string = numbers
+            .iter()
+            .map(|n| n.to_string()) // Convert numbers to strings
+            .collect::<Vec<_>>() // Collect into a vector
+            .join(","); // Join into a single comma-separated string
         Self {
             selected_algorithm: Algorithms::Bubble,
             numbers: numbers.clone(),
@@ -41,6 +47,7 @@ impl<'a> Default for Visualizer<'a> {
             start_time: None,
             total_elapsed_time: 0.0,
             selected_theme: Theme::Dark, // Default theme is dark
+            user_input: numbers_string,
         }
     }
 }
@@ -172,6 +179,21 @@ impl Visualizer<'_> {
         }
     }
 
+    fn process_user_input(&mut self) {
+        // 🔹 Parse user input: Split by commas, trim spaces, convert to numbers
+        let new_numbers: Vec<usize> = self
+            .user_input
+            .split(',')
+            .filter_map(|s| s.trim().parse::<usize>().ok())
+            .collect();
+
+        if !new_numbers.is_empty() {
+            self.numbers = new_numbers.clone();
+            self.original_numbers = new_numbers;
+            self.state = State::Start; // Reset state
+        }
+    }
+
     /// Resets the visualizer state and timer.
     fn reset(&mut self) {
         self.state = State::Start;
@@ -188,7 +210,22 @@ impl eframe::App for Visualizer<'_> {
         let mut style = (*ctx.style()).clone();
         style.visuals.panel_fill = self.selected_theme.background_color();
         ctx.set_style(style);
-    
+
+        // 🔹 Numbers input field moved to the top
+        egui::TopBottomPanel::top("numbers_input").show(ctx, |ui| {
+            ui.label("Numbers:");
+            ui.add_sized(
+                [ui.available_width(), 30.0], // Full width with a fixed height
+                egui::TextEdit::singleline(&mut self.user_input),
+            );
+
+            // Update numbers when Enter is pressed
+            if ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+                self.process_user_input();
+            }
+        });
+
+        // 🔹 Sorting control panel at the top (below numbers input)
         egui::TopBottomPanel::top("timer_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
@@ -199,7 +236,8 @@ impl eframe::App for Visualizer<'_> {
                 });
             });
         });
-    
+
+        // 🔹 Main sorting UI and visualization
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if self.handle_algorithm_selection(ui) {
@@ -208,9 +246,12 @@ impl eframe::App for Visualizer<'_> {
                 self.handle_theme_selection(ui);
                 self.create_control_buttons(ui);
             });
-    
+
             self.handle_running();
             self.draw_bars(ui);
         });
     }
 }
+
+
+

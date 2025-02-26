@@ -27,5 +27,10 @@ impl ButtonHandler {
         app.reset();
         app.numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
         app.original_numbers = app.numbers.clone();
+        app.user_input = app.numbers
+        .iter()
+        .map(|n| n.to_string())
+        .collect::<Vec<_>>()
+        .join(",");
     }
 }

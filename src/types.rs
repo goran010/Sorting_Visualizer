@@ -26,4 +26,4 @@ pub enum State {
 pub const BAR_HEIGHT_MULTIPLIER: usize = 32;
 pub const BAR_WIDTH: f32 = 6.9;
 pub const STEP_DELAY: Duration = Duration::from_millis(20);
-pub const BASELINE: f32 = 700.0;
+pub const BASELINE: f32 = 800.0;
