@@ -1,32 +1,32 @@
 use super::{Reasons, Sorter};
-use crate::sound::play_beep; 
+use crate::sound::play_beep;
 
 /// Represents the QuickSort algorithm and its state.
 pub struct QuickSort {
     partition_stack: Vec<(usize, usize)>, // Stack to track the partitions (low, high)
-    reason: Reasons,                      // Reason for the current operation (Comparing or Switching)
+    reason: Reasons, // Reason for the current operation (Comparing or Switching)
 }
 
 impl QuickSort {
     /// Partitions the array and returns the pivot index.
     /// This function selects a pivot and places it at the correct sorted position in the array.
-    /// 
+    ///
     /// # Arguments
     /// * `array` - The array slice to partition.
     /// * `low` - The starting index of the partition.
     /// * `high` - The ending index of the partition.
-    /// 
+    ///
     /// # Returns
     /// The index of the pivot after partitioning.
     fn partition(&mut self, array: &mut [usize], low: usize, high: usize) -> usize {
-        let pivot = array[high];  // Choose the pivot element (usually the last element in the range)
+        let pivot = array[high]; // Choose the pivot element (usually the last element in the range)
         let mut i = low;
 
         // Loop over the array, comparing each element with the pivot.
         for j in low..high {
             self.reason = Reasons::Comparing; // Indicate comparing step
             if array[j] <= pivot {
-                array.swap(i, j);  // Swap elements that are less than or equal to the pivot
+                array.swap(i, j); // Swap elements that are less than or equal to the pivot
                 i += 1;
             }
         }
@@ -49,7 +49,7 @@ impl Sorter for QuickSort {
     }
 
     /// Returns the special indices currently being compared (low, high).
-    /// 
+    ///
     /// # Returns
     /// A tuple `(low, high)` representing the current partition's bounds.
     fn special(&self) -> (usize, usize) {
@@ -61,7 +61,7 @@ impl Sorter for QuickSort {
     }
 
     /// Returns the reason for the current sorting action.
-    /// 
+    ///
     /// # Returns
     /// The `Reasons` enum indicating the current operation (Comparing or Switching).
     fn reason(&self) -> Reasons {
@@ -69,10 +69,10 @@ impl Sorter for QuickSort {
     }
 
     /// Executes a single step of the QuickSort algorithm.
-    /// 
+    ///
     /// # Arguments
     /// * `array` - A mutable reference to the array being sorted.
-    /// 
+    ///
     /// # Returns
     /// * `true` if sorting is complete.
     /// * `false` if sorting is still in progress.
@@ -109,7 +109,7 @@ impl Sorter for QuickSort {
     }
 
     /// Resets the state of the QuickSort instance for a fresh sort.
-    /// 
+    ///
     /// Clears the stack and resets the reason to "Comparing".
     fn reset_state(&mut self) {
         self.partition_stack.clear(); // Clear the stack
@@ -117,7 +117,7 @@ impl Sorter for QuickSort {
     }
 
     /// Checks if the QuickSort process is finished.
-    /// 
+    ///
     /// # Returns
     /// `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {

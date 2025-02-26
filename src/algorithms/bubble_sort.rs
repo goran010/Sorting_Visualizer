@@ -1,34 +1,32 @@
-use super::{Sorter, Reasons};
+use super::{Reasons, Sorter};
 use crate::sound::play_beep;
-
-
 
 /// Represents the BubbleSort algorithm and its state.
 pub struct BubbleSort {
-    pass: usize,             // Tracks the current pass through the array.
-    index: Option<usize>,    // Tracks the current index being compared, wrapped in an Option.
-    needs_switch: bool,      // Indicates if a swap is needed between two elements.
-    action_reason: Reasons,  // Tracks the reason for the current action (Comparing or Switching).
-    finished: bool,          // Indicates if the sorting is finished.
+    pass: usize,            // Tracks the current pass through the array.
+    index: Option<usize>,   // Tracks the current index being compared, wrapped in an Option.
+    needs_switch: bool,     // Indicates if a swap is needed between two elements.
+    action_reason: Reasons, // Tracks the reason for the current action (Comparing or Switching).
+    finished: bool,         // Indicates if the sorting is finished.
 }
 
 impl Sorter for BubbleSort {
     /// Initializes a new instance of BubbleSort with initial values.
     fn new() -> Self {
         BubbleSort {
-            pass: 0,               // Start with the first pass.
-            index: None,           // No index is set initially.
-            needs_switch: false,   // No swap needed initially.
+            pass: 0,                           // Start with the first pass.
+            index: None,                       // No index is set initially.
+            needs_switch: false,               // No swap needed initially.
             action_reason: Reasons::Comparing, // The action is "Comparing" initially.
-            finished: false,       // Sorting is not finished initially.
+            finished: false,                   // Sorting is not finished initially.
         }
     }
 
     /// Executes a single step of the BubbleSort algorithm.
-    /// 
+    ///
     /// # Arguments
     /// * `array` - A mutable reference to the array being sorted.
-    /// 
+    ///
     /// # Returns
     /// * `true` if sorting is complete.
     /// * `false` if sorting is still in progress.
@@ -39,7 +37,7 @@ impl Sorter for BubbleSort {
         // Check if the sorting is complete.
         if self.pass == len - 1 {
             self.finished = true; // Mark the sorting as finished.
-            return true;          // Sorting is complete.
+            return true; // Sorting is complete.
         }
 
         // Determine the current index or initialize it if it's the first time.
@@ -59,14 +57,14 @@ impl Sorter for BubbleSort {
             if idx + 1 < len {
                 self.needs_switch = array[idx] > array[idx + 1]; // Check if the elements need to be swapped.
                 self.action_reason = if self.needs_switch {
-                    Reasons::Switching  // If a swap is needed, set action to Switching.
+                    Reasons::Switching // If a swap is needed, set action to Switching.
                 } else {
-                    Reasons::Comparing  // If no swap is needed, set action to Comparing.
+                    Reasons::Comparing // If no swap is needed, set action to Comparing.
                 };
 
                 // Perform the swap if necessary.
                 if self.needs_switch {
-                    play_beep(); 
+                    play_beep();
                     array.swap(idx, idx + 1); // Swap the elements at `idx` and `idx + 1`.
                     self.needs_switch = false; // Reset the flag after the swap.
                 }
@@ -82,7 +80,7 @@ impl Sorter for BubbleSort {
     }
 
     /// Returns the current indices of the elements being compared or swapped.
-    /// 
+    ///
     /// # Returns
     /// A tuple `(current_index, next_index)` representing the indices of the elements being compared.
     fn special(&self) -> (usize, usize) {
@@ -94,7 +92,7 @@ impl Sorter for BubbleSort {
     }
 
     /// Returns the current reason for the sorting action.
-    /// 
+    ///
     /// # Returns
     /// The `Reasons` enum indicating the current operation (Comparing or Switching).
     fn reason(&self) -> Reasons {
@@ -102,7 +100,7 @@ impl Sorter for BubbleSort {
     }
 
     /// Returns whether the sorting process is complete.
-    /// 
+    ///
     /// # Returns
     /// `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {

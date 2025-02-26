@@ -1,6 +1,6 @@
+use super::constants::{CEIL, FLOOR, VECTOR_SIZE};
 use crate::ui;
 use ui::*;
-use super::constants::{CEIL, FLOOR, VECTOR_SIZE};
 
 pub struct ButtonHandler;
 
@@ -27,10 +27,11 @@ impl ButtonHandler {
         app.reset();
         app.numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
         app.original_numbers = app.numbers.clone();
-        app.user_input = app.numbers
-        .iter()
-        .map(|n| n.to_string())
-        .collect::<Vec<_>>()
-        .join(",");
+        app.user_input = app
+            .numbers
+            .iter()
+            .map(|n| n.to_string())
+            .collect::<Vec<_>>()
+            .join(",");
     }
 }

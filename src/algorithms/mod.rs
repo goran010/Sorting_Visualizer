@@ -1,13 +1,13 @@
 pub mod bogo_sort;
 pub mod bubble_sort;
+pub mod counting_sort;
 pub mod heap_sort;
 pub mod insertion_sort;
 pub mod merge_sort;
 pub mod quick_sort;
 pub mod selection_sort;
-pub mod counting_sort;
 
-/// Enum representing the reasons for sorting actions. 
+/// Enum representing the reasons for sorting actions.
 /// # Variants
 /// * `Comparing` - Indicates that elements are being compared.
 /// * `Switching` - Indicates that elements are being swapped.
@@ -26,22 +26,22 @@ pub trait Sorter {
         Self: Sized;
 
     /// Returns the indices of elements involved in the current operation.
-    /// 
+    ///
     /// # Returns
     /// A tuple `(usize, usize)` representing the indices being compared or swapped.
     fn special(&self) -> (usize, usize);
 
     /// Returns the reason for the current sorting action.
-    /// 
+    ///
     /// # Returns
     /// The `Reasons` enum indicating the current operation.
     fn reason(&self) -> Reasons;
 
     /// Executes a single step of the sorting algorithm.
-    /// 
+    ///
     /// # Arguments
     /// * `array` - A mutable reference to the array being sorted.
-    /// 
+    ///
     /// # Returns
     /// * `true` if sorting is complete.
     /// * `false` if sorting is still in progress.
@@ -51,7 +51,7 @@ pub trait Sorter {
     fn reset_state(&mut self);
 
     /// Checks if the sorting process is finished.
-    /// 
+    ///
     /// # Returns
     /// `true` if sorting is complete, otherwise `false`.
     fn is_finished(&self) -> bool;

@@ -1,17 +1,17 @@
-use super::{Sorter, Reasons};
-use crate::sound::play_beep; 
+use super::{Reasons, Sorter};
+use crate::sound::play_beep;
 
 /// Represents the CountingSort algorithm and its state.
 pub struct CountingSort {
-    counts: Vec<usize>, // Array to count occurrences of each number.
-    output: Vec<usize>, // Partially sorted array.
-    max_value: usize,   // Maximum value in the array.
-    current_value: usize, // Current value being placed.
-    output_index: usize,  // Position in output array.
-    reason: Reasons,    // Current action reason.
-    is_sorted: bool,    // Indicates if sorting is complete.
-    step_phase: usize,  // Tracks which phase of the algorithm is running.
-    array_index: usize, // Tracks the index being modified in real-time.
+    counts: Vec<usize>,      // Array to count occurrences of each number.
+    output: Vec<usize>,      // Partially sorted array.
+    max_value: usize,        // Maximum value in the array.
+    current_value: usize,    // Current value being placed.
+    output_index: usize,     // Position in output array.
+    reason: Reasons,         // Current action reason.
+    is_sorted: bool,         // Indicates if sorting is complete.
+    step_phase: usize,       // Tracks which phase of the algorithm is running.
+    array_index: usize,      // Tracks the index being modified in real-time.
     processing_index: usize, // Tracks which element is being processed.
 }
 
@@ -108,7 +108,7 @@ impl Sorter for CountingSort {
     fn special(&self) -> (usize, usize) {
         match self.step_phase {
             1 => (self.processing_index, self.processing_index), // Counting phase
-            2 => (self.array_index, self.array_index), // Placing phase
+            2 => (self.array_index, self.array_index),           // Placing phase
             _ => (usize::MAX, usize::MAX),
         }
     }

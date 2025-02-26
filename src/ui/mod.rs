@@ -1,28 +1,29 @@
 mod buttons;
 pub mod constants;
-use strum::IntoEnumIterator;
-use std::fs;
 use rfd::FileDialog;
+use std::fs;
+use strum::IntoEnumIterator;
 
-use self::constants::{CEIL, FLOOR, VECTOR_SIZE, Theme};
+use self::constants::{CEIL, FLOOR, Theme, VECTOR_SIZE};
 use crate::algorithms::{
-    bogo_sort::BogoSort, bubble_sort::BubbleSort, heap_sort::HeapSort, insertion_sort::InsertionSort,
-    merge_sort::MergeSort, quick_sort::QuickSort, selection_sort::SelectionSort, counting_sort::CountingSort, Reasons, Sorter,
+    Reasons, Sorter, bogo_sort::BogoSort, bubble_sort::BubbleSort, counting_sort::CountingSort,
+    heap_sort::HeapSort, insertion_sort::InsertionSort, merge_sort::MergeSort,
+    quick_sort::QuickSort, selection_sort::SelectionSort,
 };
+use crate::types::{Algorithms, BAR_HEIGHT_MULTIPLIER, BASELINE, STEP_DELAY, State};
 use crate::util;
 use buttons::ButtonHandler;
 use eframe::{
     egui::{self, Button, ComboBox, Grid, Sense, Ui},
-    epaint::{vec2, Color32, Stroke, Vec2},
+    epaint::{Color32, Stroke, Vec2, vec2},
 };
 use std::{thread, time::Instant};
-use crate::types::{Algorithms, State, BAR_HEIGHT_MULTIPLIER, BAR_WIDTH, STEP_DELAY, BASELINE};
 
 /// Main structure managing the visualizer's state, data, and behavior.
 pub(crate) struct Visualizer<'a> {
     selected_algorithm: Algorithms, // The currently selected sorting algorithm.
-    numbers: Vec<usize>, // The array of numbers being sorted.
-    original_numbers: Vec<usize>, // A copy of the original unsorted array.
+    numbers: Vec<usize>,            // The array of numbers being sorted.
+    original_numbers: Vec<usize>,   // A copy of the original unsorted array.
     state: State, // The current state of the visualizer (Start, Running, Finished).
     sorter: Box<dyn Sorter + 'a>, // The sorting algorithm instance.
     start_time: Option<Instant>, // Timer tracking the start of sorting.
@@ -62,17 +63,31 @@ impl Visualizer<'_> {
 
     /// Draws the bars representing the current state of the array.
     fn draw_bars(&self, ui: &mut Ui) {
-        ui.horizontal_top(|ui| {
-            self.numbers.iter().enumerate().for_each(|(index, &value)| {
-                let color = self.get_bar_color(index);
-                Self::draw_bar_helper(vec2(BAR_WIDTH, BASELINE - (value * BAR_HEIGHT_MULTIPLIER) as f32), color, ui);
-            });
-        });
+        let window_width = ui.available_width();
+        let num_bars = self.numbers.len().max(1); // Prevent division by zero
+        let spacing = 2.0; // Space between bars
+        let total_spacing = spacing * (num_bars - 1) as f32;
+        let bar_width = ((window_width - total_spacing) / num_bars as f32).max(2.0); // Ensure minimum width
+
+        let painter = ui.painter();
+
+        for (index, &value) in self.numbers.iter().enumerate() {
+            let x = index as f32 * (bar_width + spacing);
+            let height = (value * BAR_HEIGHT_MULTIPLIER) as f32;
+            let y = BASELINE - height;
+
+            let color = self.get_bar_color(index);
+            let rect = egui::Rect::from_min_size(egui::pos2(x, y), vec2(bar_width, height));
+
+            painter.rect_filled(rect, 0.0, color);
+        }
     }
 
     /// Determines the color of a bar based on the sorting state and indices.
     fn get_bar_color(&self, index: usize) -> Color32 {
-        if self.state != State::Finished && (index == self.sorter.special().0 || index == self.sorter.special().1) {
+        if self.state != State::Finished
+            && (index == self.sorter.special().0 || index == self.sorter.special().1)
+        {
             match self.sorter.reason() {
                 Reasons::Comparing => Color32::LIGHT_YELLOW,
                 Reasons::Switching => Color32::LIGHT_GREEN,
@@ -80,18 +95,6 @@ impl Visualizer<'_> {
         } else {
             self.selected_theme.bar_color() // Bar color based on the selected theme
         }
-    }
-
-    /// Helper function to draw a single bar.
-    fn draw_bar_helper(size: Vec2, color: Color32, ui: &mut Ui) {
-        Grid::new("numbers").spacing(vec2(1.0, 1.0)).show(ui, |ui| {
-            ui.vertical(|ui| {
-                let mut rect = ui.allocate_exact_size(size, Sense::hover()).0;
-                rect.set_top(size.y);
-                rect.set_bottom(BASELINE);
-                ui.painter().rect(rect, 2.0, color, Stroke::NONE);
-            });
-        });
     }
 
     /// Handles the selection of a sorting algorithm from the dropdown menu.
@@ -102,7 +105,11 @@ impl Visualizer<'_> {
             .selected_text(format!("{:?} Sort", self.selected_algorithm))
             .show_ui(ui, |ui| {
                 Algorithms::iter().for_each(|alg| {
-                    ui.selectable_value(&mut self.selected_algorithm, alg, format!("{:?} Sort", alg));
+                    ui.selectable_value(
+                        &mut self.selected_algorithm,
+                        alg,
+                        format!("{:?} Sort", alg),
+                    );
                 });
             });
         if previous != self.selected_algorithm {
@@ -119,7 +126,14 @@ impl Visualizer<'_> {
         ComboBox::from_id_source("theme_selector")
             .selected_text(format!("{:?}", self.selected_theme))
             .show_ui(ui, |ui| {
-                for theme in [Theme::Dark, Theme::Light, Theme::Summer, Theme::Autumn, Theme::Winter, Theme::Spring] {
+                for theme in [
+                    Theme::Dark,
+                    Theme::Light,
+                    Theme::Summer,
+                    Theme::Autumn,
+                    Theme::Winter,
+                    Theme::Spring,
+                ] {
                     ui.selectable_value(&mut self.selected_theme, theme, format!("{:?}", theme));
                 }
             });
@@ -169,12 +183,12 @@ impl Visualizer<'_> {
         if self.state == State::Running {
             thread::sleep(STEP_DELAY);
             ButtonHandler::handle_step(self);
-    
+
             // Update the elapsed time and check if the sorting is finished
             if let Some(start) = self.start_time {
                 self.total_elapsed_time = start.elapsed().as_secs_f64(); // Time in seconds
             }
-    
+
             if self.sorter.is_finished() {
                 self.state = State::Finished;
             }
@@ -207,14 +221,16 @@ impl Visualizer<'_> {
                 if !new_numbers.is_empty() {
                     self.numbers = new_numbers.clone();
                     self.original_numbers = new_numbers;
-                    self.user_input = self.numbers
+                    self.user_input = self
+                        .numbers
                         .iter()
                         .map(|n| n.to_string())
                         .collect::<Vec<_>>()
                         .join(",");
                 }
             }
-        }}
+        }
+    }
     /// Resets the visualizer state and timer.
     fn reset(&mut self) {
         self.state = State::Start;
@@ -227,7 +243,7 @@ impl Visualizer<'_> {
 impl eframe::App for Visualizer<'_> {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint(); // UI refresh request
-    
+
         let mut style = (*ctx.style()).clone();
         style.visuals.panel_fill = self.selected_theme.background_color();
         ctx.set_style(style);
@@ -248,20 +264,23 @@ impl eframe::App for Visualizer<'_> {
 
         // 🔹 Sorting control panel at the top (below numbers input)
         egui::TopBottomPanel::top("timer_panel").show(ctx, |ui| {
-    ui.horizontal(|ui| {
-        ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
-            // 🔹 "Load from File" button next to elapsed time
-            if ui.button("📂 Load from File").clicked() {
-                self.load_numbers_from_file();
-            }
+            ui.horizontal(|ui| {
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
+                    // 🔹 "Load from File" button next to elapsed time
+                    if ui.button("📂 Load from File").clicked() {
+                        self.load_numbers_from_file();
+                    }
 
-            ui.label(
-                egui::RichText::new(format!("Elapsed Time: {:.2}s", self.total_elapsed_time))
-                    .color(self.selected_theme.text_color()),
-            );
+                    ui.label(
+                        egui::RichText::new(format!(
+                            "Elapsed Time: {:.2}s",
+                            self.total_elapsed_time
+                        ))
+                        .color(self.selected_theme.text_color()),
+                    );
+                });
+            });
         });
-    });
-});
         // 🔹 Main sorting UI and visualization
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
@@ -277,6 +296,3 @@ impl eframe::App for Visualizer<'_> {
         });
     }
 }
-
-
-

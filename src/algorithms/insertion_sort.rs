@@ -1,5 +1,5 @@
 use super::{Reasons, Sorter};
-use crate::sound::play_beep; 
+use crate::sound::play_beep;
 
 /// Represents the InsertionSort algorithm and its state.
 pub struct InsertionSort {
@@ -13,15 +13,15 @@ impl Sorter for InsertionSort {
     /// Creates a new instance of the InsertionSort algorithm with initial values.
     fn new() -> Self {
         InsertionSort {
-            current_index: 1,  // Sorting starts from the second element in the array.
-            sorted_index: 0,   // The first element is initially considered sorted.
+            current_index: 1,           // Sorting starts from the second element in the array.
+            sorted_index: 0,            // The first element is initially considered sorted.
             reason: Reasons::Comparing, // Initial action is set to "Comparing".
-            is_sorted: false,  // Initially, the sorting process is not complete.
+            is_sorted: false,           // Initially, the sorting process is not complete.
         }
     }
 
     /// Returns the indices currently being compared or moved.
-    /// 
+    ///
     /// # Returns
     /// A tuple of `(current_index, sorted_index)` representing the indices involved.
     fn special(&self) -> (usize, usize) {
@@ -29,7 +29,7 @@ impl Sorter for InsertionSort {
     }
 
     /// Returns the reason for the current operation.
-    /// 
+    ///
     /// # Returns
     /// The `Reasons` enum indicating whether the current action is Comparing or Inserting.
     fn reason(&self) -> Reasons {
@@ -37,10 +37,10 @@ impl Sorter for InsertionSort {
     }
 
     /// Executes a single step of the InsertionSort algorithm.
-    /// 
+    ///
     /// # Arguments
     /// * `array` - A mutable reference to the array being sorted.
-    /// 
+    ///
     /// # Returns
     /// * `true` if sorting is complete.
     /// * `false` if sorting is still in progress.
@@ -73,7 +73,7 @@ impl Sorter for InsertionSort {
     }
 
     /// Resets the state of the InsertionSort algorithm.
-    /// 
+    ///
     /// Resets `current_index` to 1 and marks the sorting process as not complete.
     fn reset_state(&mut self) {
         self.current_index = 1; // Reset to the second element.
@@ -81,7 +81,7 @@ impl Sorter for InsertionSort {
     }
 
     /// Checks whether the sorting process is complete.
-    /// 
+    ///
     /// # Returns
     /// `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {

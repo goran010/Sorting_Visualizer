@@ -1,5 +1,5 @@
 use super::{Reasons, Sorter};
-use crate::sound::play_beep; 
+use crate::sound::play_beep;
 
 /// Represents the HeapSort algorithm and its state.
 pub struct HeapSort {
@@ -11,11 +11,11 @@ pub struct HeapSort {
 impl HeapSort {
     /// Performs the sift-down operation to maintain the heap property.
     /// This operation ensures that the subtree rooted at `root` is a valid max-heap.
-    /// 
+    ///
     /// # Arguments
     /// * `array` - A mutable slice representing the array.
     /// * `end_index` - The index of the last element in the current heap.
-    /// 
+    ///
     /// # Returns
     /// `true` if the sift-down operation is complete, `false` if further sifting is required.
     fn sift_down(&mut self, array: &mut [usize], end_index: usize) -> bool {
@@ -49,14 +49,14 @@ impl Sorter for HeapSort {
     /// Initializes a new `HeapSort` instance.
     fn new() -> Self {
         HeapSort {
-            index: usize::MAX, // Initially, the index is not set.
-            root: usize::MAX,  // Initially, there is no root node.
+            index: usize::MAX,          // Initially, the index is not set.
+            root: usize::MAX,           // Initially, there is no root node.
             reason: Reasons::Comparing, // Initially, we're comparing elements.
         }
     }
 
     /// Returns the special indices involved in the current operation.
-    /// 
+    ///
     /// # Returns
     /// A tuple `(root, usize::MAX)` where `root` is the current root being sifted.
     fn special(&self) -> (usize, usize) {
@@ -64,7 +64,7 @@ impl Sorter for HeapSort {
     }
 
     /// Returns the reason for the current sorting action (either `Comparing` or `Switching`).
-    /// 
+    ///
     /// # Returns
     /// The `Reasons` enum indicating the current operation.
     fn reason(&self) -> Reasons {
@@ -72,17 +72,17 @@ impl Sorter for HeapSort {
     }
 
     /// Performs one step of the HeapSort algorithm.
-    /// 
+    ///
     /// # Arguments
     /// * `array` - A mutable reference to the array being sorted.
-    /// 
+    ///
     /// # Returns
     /// * `true` if sorting is complete.
     /// * `false` if sorting is still in progress.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         if self.index == usize::MAX {
             // First step: Build the heap.
-            self.index = array.len() - 1;  // Start from the last element.
+            self.index = array.len() - 1; // Start from the last element.
             self.root = (self.index + 1) / 2 - 1; // The last non-leaf node.
         }
 
@@ -105,7 +105,7 @@ impl Sorter for HeapSort {
             // Swap the root with the last unsorted element (this moves the largest element to the end).
             array.swap(0, self.index);
             self.index -= 1; // Decrease the heap size.
-            self.root = 0;   // Start sifting down the new root.
+            self.root = 0; // Start sifting down the new root.
         }
 
         false // Continue sorting until the heap is fully sorted.
@@ -114,12 +114,12 @@ impl Sorter for HeapSort {
     /// Resets the state of the HeapSort instance.
     fn reset_state(&mut self) {
         self.index = usize::MAX; // Reset index to an invalid value.
-        self.root = usize::MAX;  // Reset root to an invalid value.
+        self.root = usize::MAX; // Reset root to an invalid value.
         self.reason = Reasons::Comparing; // Reset reason to comparing.
     }
 
     /// Checks if the sorting process is finished.
-    /// 
+    ///
     /// # Returns
     /// `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {

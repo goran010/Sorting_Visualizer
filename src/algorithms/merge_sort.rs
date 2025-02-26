@@ -1,14 +1,14 @@
-use super::{Sorter, Reasons};
-use crate::sound::play_beep; 
+use super::{Reasons, Sorter};
+use crate::sound::play_beep;
 
 /// A struct representing the MergeSort algorithm.
 /// It maintains the state of the sorting process, including subarray size, index, and a temporary array for merging.
 pub struct MergeSort {
-    size: usize,          // Current size of the subarrays being merged.
-    index: usize,         // Index tracking the current position in the array.
-    temp: Vec<usize>,     // Temporary array used during merging.
-    reason: Reasons,      // Current action reason (Comparing or Switching).
-    is_sorted: bool,      // Indicates whether the sorting process is complete.
+    size: usize,      // Current size of the subarrays being merged.
+    index: usize,     // Index tracking the current position in the array.
+    temp: Vec<usize>, // Temporary array used during merging.
+    reason: Reasons,  // Current action reason (Comparing or Switching).
+    is_sorted: bool,  // Indicates whether the sorting process is complete.
 }
 
 impl MergeSort {
@@ -61,11 +61,11 @@ impl Sorter for MergeSort {
     /// Creates a new instance of MergeSort with initial settings.
     fn new() -> Self {
         MergeSort {
-            size: 1,                  // Start merging subarrays of size 1.
-            index: 0,                 // Initialize index tracker.
-            temp: Vec::new(),         // Temporary array will be initialized during sorting.
+            size: 1,                    // Start merging subarrays of size 1.
+            index: 0,                   // Initialize index tracker.
+            temp: Vec::new(),           // Temporary array will be initialized during sorting.
             reason: Reasons::Comparing, // Initial action reason is Comparing.
-            is_sorted: false,         // Sorting is not complete initially.
+            is_sorted: false,           // Sorting is not complete initially.
         }
     }
 
@@ -113,11 +113,11 @@ impl Sorter for MergeSort {
 
     /// Resets the state of the MergeSort instance for a new sorting process.
     fn reset_state(&mut self) {
-        self.size = 1;                 // Reset the size to its initial value.
-        self.index = 0;                // Reset the index tracker.
-        self.temp.clear();             // Clear the temporary array.
+        self.size = 1; // Reset the size to its initial value.
+        self.index = 0; // Reset the index tracker.
+        self.temp.clear(); // Clear the temporary array.
         self.reason = Reasons::Comparing; // Reset the action reason.
-        self.is_sorted = false;        // Sorting is no longer marked as complete.
+        self.is_sorted = false; // Sorting is no longer marked as complete.
     }
 
     /// Returns the range of indices currently being processed.

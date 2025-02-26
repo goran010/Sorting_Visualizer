@@ -1,15 +1,15 @@
-use rand::{distributions::Uniform, Rng};
+use rand::{Rng, distributions::Uniform};
 
 /// Generates a random vector of integers within a specified range.
-/// 
+///
 /// # Arguments
 /// * `floor` - The minimum value (inclusive) for the generated integers.
 /// * `ceil` - The maximum value (exclusive) for the generated integers.
 /// * `n` - The number of integers to generate.
-/// 
+///
 /// # Returns
 /// A `Vec<usize>` containing `n` random integers in the range `[floor, ceil)`.
-/// 
+///
 /// # Examples
 /// ```
 /// let random_vector = gen_random_vector(1, 10, 5);
