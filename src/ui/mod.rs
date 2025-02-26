@@ -10,7 +10,7 @@ use crate::algorithms::{
     heap_sort::HeapSort, insertion_sort::InsertionSort, merge_sort::MergeSort,
     quick_sort::QuickSort, selection_sort::SelectionSort,
 };
-use crate::types::{Algorithms, BAR_HEIGHT_MULTIPLIER, BASELINE, STEP_DELAY, State};
+use crate::types::{Algorithms, STEP_DELAY, State};
 use crate::util;
 use buttons::ButtonHandler;
 use eframe::{
@@ -64,22 +64,28 @@ impl Visualizer<'_> {
     /// Draws the bars representing the current state of the array.
     fn draw_bars(&self, ui: &mut Ui) {
         let window_width = ui.available_width();
+        let window_height = ui.available_height();
         let num_bars = self.numbers.len().max(1); // Prevent division by zero
-        let spacing = 4.0; // Space between bars
+        let spacing = 5.0; // Reduce space between bars for better fit
         let total_spacing = spacing * (num_bars - 1) as f32;
         let bar_width = ((window_width - total_spacing) / num_bars as f32).max(2.0); // Ensure minimum width
+
+        let max_value = *self.numbers.iter().max().unwrap_or(&1); // Get max value to scale height
+
+        let top_ui_height = 150.0; // Reduced estimation for UI height
+        let graph_height = (window_height - top_ui_height).max(200.0); // Maximize graph usage
 
         let painter = ui.painter();
 
         for (index, &value) in self.numbers.iter().enumerate() {
-            let x = index as f32 * (bar_width + spacing);
-            let height = (value * BAR_HEIGHT_MULTIPLIER) as f32;
-            let y = BASELINE - height;
+            let x = index as f32 * (bar_width + spacing) + 5.0;
+            let height = ((value as f32 / max_value as f32) * graph_height).max(10.0); // Ensure bars have a minimum height
+            let y = window_height - height + 105.0; // ✅ Bars align properly at bottom
 
             let color = self.get_bar_color(index);
             let rect = egui::Rect::from_min_size(egui::pos2(x, y), vec2(bar_width, height));
 
-            painter.rect_filled(rect, 4.0, color);
+            painter.rect_filled(rect, 4.0, color); // **Rounded top corners**
         }
     }
 
