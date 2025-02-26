@@ -23,7 +23,7 @@ pub enum State {
 }
 
 /// Constants for configuring the visualizer.
-pub const BAR_HEIGHT_MULTIPLIER: usize = 32;
+pub const BAR_HEIGHT_MULTIPLIER: usize = 28;
 pub const BAR_WIDTH: f32 = 6.9;
-pub const STEP_DELAY: Duration = Duration::from_millis(20);
-pub const BASELINE: f32 = 800.0;
+pub const STEP_DELAY: Duration = Duration::from_millis(10);
+pub const BASELINE: f32 = 720.0;

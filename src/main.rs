@@ -10,7 +10,7 @@ mod sound;
 fn main() {
     // Define the native options for the application window.
     let native_options = NativeOptions {
-        initial_window_size: Some(Vec2::new(1530., 750.)), // Set the initial window size.
+        initial_window_size: Some(Vec2::new(1500., 730.)), // Set the initial window size.
         ..Default::default() // Use default options for other settings.
     };
 

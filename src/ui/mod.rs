@@ -1,6 +1,8 @@
 mod buttons;
 pub mod constants;
 use strum::IntoEnumIterator;
+use std::fs;
+use rfd::FileDialog;
 
 use self::constants::{CEIL, FLOOR, VECTOR_SIZE, Theme};
 use crate::algorithms::{
@@ -193,7 +195,26 @@ impl Visualizer<'_> {
             self.state = State::Start; // Reset state
         }
     }
+    /// Opens a file dialog, reads numbers from a file, and updates the numbers field.
+    fn load_numbers_from_file(&mut self) {
+        if let Some(path) = FileDialog::new().pick_file() {
+            if let Ok(contents) = fs::read_to_string(path) {
+                let new_numbers: Vec<usize> = contents
+                    .split(',')
+                    .filter_map(|s| s.trim().parse::<usize>().ok())
+                    .collect();
 
+                if !new_numbers.is_empty() {
+                    self.numbers = new_numbers.clone();
+                    self.original_numbers = new_numbers;
+                    self.user_input = self.numbers
+                        .iter()
+                        .map(|n| n.to_string())
+                        .collect::<Vec<_>>()
+                        .join(",");
+                }
+            }
+        }}
     /// Resets the visualizer state and timer.
     fn reset(&mut self) {
         self.state = State::Start;
@@ -227,16 +248,20 @@ impl eframe::App for Visualizer<'_> {
 
         // 🔹 Sorting control panel at the top (below numbers input)
         egui::TopBottomPanel::top("timer_panel").show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
-                    ui.label(
-                        egui::RichText::new(format!("Elapsed Time: {:.2}s", self.total_elapsed_time))
-                            .color(self.selected_theme.text_color()),
-                    );
-                });
-            });
-        });
+    ui.horizontal(|ui| {
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
+            // 🔹 "Load from File" button next to elapsed time
+            if ui.button("📂 Load from File").clicked() {
+                self.load_numbers_from_file();
+            }
 
+            ui.label(
+                egui::RichText::new(format!("Elapsed Time: {:.2}s", self.total_elapsed_time))
+                    .color(self.selected_theme.text_color()),
+            );
+        });
+    });
+});
         // 🔹 Main sorting UI and visualization
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
