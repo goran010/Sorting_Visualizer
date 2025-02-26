@@ -1,9 +1,7 @@
-Poboljšanja za aplikaciju vizualizacije sortiranja u Rustu
 
-1. Uključiti više algoritama za usporedbu, poput Radix Sorta.
+1. Uključiti više algoritama za usporedbu
 
 2. Prikazati statistike tijekom ili nakon sortiranja, poput broja usporedbi, broja zamjena i vremena potrebnog za sortiranje.
 
 3. Integracija s vanjskim podacima, učitavanje nizova iz datoteka (npr. .txt ili .csv) i vizualizirajte sortiranje stvarnih podataka.
 
-4. Adaptivna vizualizacija na temelju veličine zaslona ili preferencija korisnika. Automatski skaliranje visine stupaca
