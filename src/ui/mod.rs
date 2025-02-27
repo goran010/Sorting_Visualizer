@@ -6,14 +6,14 @@ use strum::IntoEnumIterator;
 
 use self::constants::{CEIL, FLOOR, Theme, VECTOR_SIZE};
 use crate::algorithms::{
-    Reasons, Sorter, bogo_sort::BogoSort, bubble_sort::BubbleSort, counting_sort::CountingSort,
-    heap_sort::HeapSort, insertion_sort::InsertionSort, merge_sort::MergeSort,
-    quick_sort::QuickSort, selection_sort::SelectionSort, cocktail_sort::CocktailSort,
-    gnome_sort::GnomeSort, pancake_sort::PancakeSort, shell_sort::ShellSort,
-    comb_sort::CombSort, odd_even_sort::OddEvenSort,
+    Reasons, Sorter, bogo_sort::BogoSort, bubble_sort::BubbleSort, cocktail_sort::CocktailSort,
+    comb_sort::CombSort, counting_sort::CountingSort, gnome_sort::GnomeSort, heap_sort::HeapSort,
+    insertion_sort::InsertionSort, merge_sort::MergeSort, odd_even_sort::OddEvenSort,
+    pancake_sort::PancakeSort, quick_sort::QuickSort, selection_sort::SelectionSort,
+    shell_sort::ShellSort,
 };
+use crate::random::gen_random_vector;
 use crate::types::{Algorithms, STEP_DELAY, State};
-use crate::util;
 use buttons::ButtonHandler;
 use eframe::{
     egui::{self, Button, ComboBox, Ui},
@@ -32,12 +32,14 @@ pub(crate) struct Visualizer<'a> {
     total_elapsed_time: f64, // Total elapsed time of the sorting process.
     selected_theme: Theme, // The currently selected theme.
     user_input: String,
+    comparisons: usize, // 🔹 Initialize comparisons
+    swaps: usize,       // 🔹 Initialize swaps
 }
 
 impl<'a> Default for Visualizer<'a> {
     /// Creates a default instance of the visualizer with the Bubble Sort algorithm and dark theme.
     fn default() -> Self {
-        let numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
+        let numbers = gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
         let numbers_string = numbers
             .iter()
             .map(|n| n.to_string()) // Convert numbers to strings
@@ -53,6 +55,8 @@ impl<'a> Default for Visualizer<'a> {
             total_elapsed_time: 0.0,
             selected_theme: Theme::Dark, // Default theme is dark
             user_input: numbers_string,
+            comparisons: 0,
+            swaps: 0,
         }
     }
 }
@@ -87,7 +91,7 @@ impl Visualizer<'_> {
             let color = self.get_bar_color(index);
             let rect = egui::Rect::from_min_size(egui::pos2(x, y), vec2(bar_width, bar_height));
 
-            painter.rect_filled(rect, 4.0, color); 
+            painter.rect_filled(rect, 4.0, color);
         }
     }
 
@@ -234,7 +238,7 @@ impl Visualizer<'_> {
                     .split(',')
                     .filter_map(|s| s.trim().parse::<usize>().ok())
                     .collect();
-    
+
                 if !new_numbers.is_empty() {
                     self.numbers = new_numbers.clone();
                     self.original_numbers = new_numbers;
@@ -250,14 +254,17 @@ impl Visualizer<'_> {
     }
 
     fn load_numbers_from_csv(&mut self) {
-        if let Some(path) = FileDialog::new().add_filter("CSV Files", &["csv"]).pick_file() {
+        if let Some(path) = FileDialog::new()
+            .add_filter("CSV Files", &["csv"])
+            .pick_file()
+        {
             if let Ok(contents) = fs::read_to_string(path) {
                 let new_numbers: Vec<usize> = contents
                     .lines() // Split by lines
                     .flat_map(|line| line.split(','))
                     .filter_map(|s| s.trim().parse::<usize>().ok())
                     .collect();
-    
+
                 if !new_numbers.is_empty() {
                     self.numbers = new_numbers.clone();
                     self.original_numbers = new_numbers;
@@ -291,19 +298,20 @@ impl eframe::App for Visualizer<'_> {
 
         // 🔹 Numbers input field moved to the top
         egui::TopBottomPanel::top("numbers_input").show(ctx, |ui| {
-            ui.horizontal(|ui| { // Horizontal layout for input field and button
+            ui.horizontal(|ui| {
+                // Horizontal layout for input field and button
                 ui.label("Numbers:");
                 ui.add_sized(
                     [ui.available_width() - 60.0, 30.0], // Width and height of the input field
                     egui::TextEdit::singleline(&mut self.user_input),
                 );
-        
+
                 // Enter button for user input
                 if ui.button("Select").clicked() {
                     self.process_user_input(); // Process user input
                 }
             });
-        
+
             // User can press Enter to submit input
             if ui.input(|i| i.key_pressed(egui::Key::Enter)) {
                 self.process_user_input();
@@ -323,13 +331,23 @@ impl eframe::App for Visualizer<'_> {
                         self.load_numbers_from_csv();
                     }
 
-                    ui.label(
-                        egui::RichText::new(format!(
-                            "Elapsed Time: {:.2}s",
-                            self.total_elapsed_time
-                        ))
-                        .color(self.selected_theme.text_color()),
-                    );
+                    ui.horizontal(|ui| {
+                        ui.label(
+                            egui::RichText::new(format!("🔍 Comparisons: {} ", self.comparisons))
+                                .color(self.selected_theme.text_color()),
+                        );
+                        ui.label(
+                            egui::RichText::new(format!("🔄 Swaps: {} ", self.swaps))
+                                .color(self.selected_theme.text_color()),
+                        );
+                        ui.label(
+                            egui::RichText::new(format!(
+                                "Elapsed Time: {:.2}s",
+                                self.total_elapsed_time
+                            ))
+                            .color(self.selected_theme.text_color()),
+                        );
+                    });
                 });
             });
         });

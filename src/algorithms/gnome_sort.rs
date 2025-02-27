@@ -1,4 +1,4 @@
-use super::{Sorter, Reasons};
+use super::{Reasons, Sorter};
 use crate::sound::play_beep;
 
 /// Represents the state of the Gnome Sort algorithm.
@@ -11,7 +11,7 @@ impl GnomeSort {
     /// Creates a new instance of the algorithm.
     pub fn new() -> Self {
         Self {
-            index: 1,  // Starts at the second element, like in the C++ version
+            index: 1, // Starts at the second element, like in the C++ version
             finished: false,
         }
     }
@@ -28,7 +28,7 @@ impl Sorter for GnomeSort {
         if self.finished {
             (usize::MAX, usize::MAX)
         } else {
-            (self.index.saturating_sub(1), self.index)  // Prevents underflow
+            (self.index.saturating_sub(1), self.index) // Prevents underflow
         }
     }
 

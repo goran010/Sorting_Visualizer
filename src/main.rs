@@ -1,16 +1,16 @@
 use eframe::{NativeOptions, epaint::Vec2, run_native};
 
 mod algorithms;
+mod random;
 mod sound;
 mod types;
 mod ui;
-mod util;
 
 /// The entry point for the sorting algorithm visualizer application.
 fn main() {
     // Define the native options for the application window.
     let native_options = NativeOptions {
-        initial_window_size: Some(Vec2::new(1500., 730.)), // Set the initial window size.
+        initial_window_size: Some(Vec2::new(1650., 730.)), // Set the initial window size.
         ..Default::default()                               // Use default options for other settings.
     };
 

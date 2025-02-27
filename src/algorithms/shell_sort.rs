@@ -1,4 +1,4 @@
-use super::{Sorter, Reasons};
+use super::{Reasons, Sorter};
 use crate::sound::play_beep;
 
 pub struct ShellSort {
@@ -10,7 +10,7 @@ pub struct ShellSort {
 impl ShellSort {
     pub fn new() -> Self {
         Self {
-            gap: 0, 
+            gap: 0,
             i: 0,
             finished: false,
         }
@@ -64,7 +64,6 @@ impl Sorter for ShellSort {
 
                 array[j] = temp;
                 self.i += 1; // Move to next element
-
             } else {
                 // Reduce gap after finishing a full pass
                 self.gap /= 2;

@@ -1,4 +1,4 @@
-use super::{Sorter, Reasons};
+use super::{Reasons, Sorter};
 use crate::sound::play_beep;
 
 pub struct CombSort {
@@ -11,7 +11,7 @@ pub struct CombSort {
 impl CombSort {
     pub fn new() -> Self {
         Self {
-            gap: 0, 
+            gap: 0,
             swapped: true,
             i: 0,
             finished: false,
@@ -20,11 +20,7 @@ impl CombSort {
 
     fn get_next_gap(gap: usize) -> usize {
         let new_gap = (gap * 10) / 13;
-        if new_gap < 1 {
-            1
-        } else {
-            new_gap
-        }
+        if new_gap < 1 { 1 } else { new_gap }
     }
 }
 

@@ -14,5 +14,5 @@ pub fn play_beep() {
 
     sink.append(source);
     sink.sleep_until_end(); // Ensures the sound plays fully before proceeding
-    thread::sleep(Duration::from_millis(20));
+    thread::sleep(Duration::from_millis(25));
 }

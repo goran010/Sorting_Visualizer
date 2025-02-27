@@ -1,13 +1,13 @@
-use super::{Sorter, Reasons};
+use super::{Reasons, Sorter};
 use crate::sound::play_beep;
 
 /// Represents the state of the Cocktail Shaker Sort algorithm.
 pub struct CocktailSort {
-    start: usize,     // Start index of the array
-    end: usize,       // End index of the array
-    swapped: bool,    // Indicates whether elements were swapped
-    forward: bool,    // Sorting direction (true = forward, false = backward)
-    finished: bool,   // Indicates if sorting is complete
+    start: usize,   // Start index of the array
+    end: usize,     // End index of the array
+    swapped: bool,  // Indicates whether elements were swapped
+    forward: bool,  // Sorting direction (true = forward, false = backward)
+    finished: bool, // Indicates if sorting is complete
 }
 
 impl CocktailSort {
@@ -74,7 +74,7 @@ impl Sorter for CocktailSort {
         }
 
         play_beep();
-        
+
         // If no swaps occurred in the last full pass, sorting is done
         if !self.swapped {
             self.finished = true;

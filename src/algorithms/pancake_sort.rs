@@ -1,4 +1,4 @@
-use super::{Sorter, Reasons};
+use super::{Reasons, Sorter};
 use crate::sound::play_beep;
 
 pub struct PancakeSort {

@@ -1,4 +1,5 @@
 use super::constants::{CEIL, FLOOR, VECTOR_SIZE};
+use crate::random::gen_random_vector;
 use crate::ui;
 use ui::*;
 
@@ -25,7 +26,7 @@ impl ButtonHandler {
     /// Resets `app` state, generates new numbers, and updates the initial state.
     pub(crate) fn handle_shuffle(app: &mut Visualizer) {
         app.reset();
-        app.numbers = util::gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
+        app.numbers = gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
         app.original_numbers = app.numbers.clone();
         app.user_input = app
             .numbers
