@@ -74,20 +74,20 @@ impl Visualizer<'_> {
 
         let max_value = *self.numbers.iter().max().unwrap_or(&1); // Get max value to scale height
 
-        let top_ui_height = 150.0; // Reduced estimation for UI height
-        let graph_height = (window_height - top_ui_height).max(200.0); // Maximize graph usage
+        let top_ui_height = 150.0;
+        let graph_height = (window_height - top_ui_height).max(250.0); // Maximize graph usage
 
         let painter = ui.painter();
 
         for (index, &value) in self.numbers.iter().enumerate() {
             let x = index as f32 * (bar_width + spacing) + 5.0;
-            let height = ((value as f32 / max_value as f32) * graph_height).max(10.0); // Ensure bars have a minimum height
-            let y = window_height - height + 105.0; // ✅ Bars align properly at bottom
+            let bar_height = ((value as f32 / max_value as f32) * graph_height).max(10.0);
+            let y = window_height - bar_height + 96.0; // bars align properly at bottom
 
             let color = self.get_bar_color(index);
-            let rect = egui::Rect::from_min_size(egui::pos2(x, y), vec2(bar_width, height));
+            let rect = egui::Rect::from_min_size(egui::pos2(x, y), vec2(bar_width, bar_height));
 
-            painter.rect_filled(rect, 4.0, color); // **Rounded top corners**
+            painter.rect_filled(rect, 4.0, color); 
         }
     }
 
