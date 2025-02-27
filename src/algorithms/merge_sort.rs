@@ -27,6 +27,7 @@ impl MergeSort {
 
         // Merge elements from both halves into the temporary array.
         while left <= mid && right <= end {
+            self.comparisons += 1;
             if array[left] <= array[right] {
                 self.temp[temp_idx] = array[left];
                 left += 1;

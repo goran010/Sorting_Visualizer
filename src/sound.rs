@@ -1,5 +1,4 @@
 use rodio::{OutputStream, Sink, Source, source::SineWave};
-use std::thread;
 use std::time::Duration;
 
 pub fn play_beep() {
