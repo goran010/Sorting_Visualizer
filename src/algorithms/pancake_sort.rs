@@ -4,13 +4,17 @@ use crate::sound::play_beep;
 pub struct PancakeSort {
     curr_size: usize,
     finished: bool,
+    swaps: usize, // Indicates if the sorting is finished.
+    comparisons: usize,
 }
 
 impl PancakeSort {
     pub fn new() -> Self {
         Self {
-            curr_size: 0, // Will be initialized later
-            finished: false,
+            curr_size: 0,    // Will be initialized later
+            finished: false, // Sorting is not finished initially.
+            comparisons: 0,
+            swaps: 0,
         }
     }
 
@@ -58,7 +62,8 @@ impl Sorter for PancakeSort {
             return true;
         }
 
-        play_beep(); // Beep sound for visualization
+        play_beep();
+        self.swaps += 1; // Beep sound for visualization
 
         let max_index = Self::find_max(array, self.curr_size);
 
@@ -74,11 +79,18 @@ impl Sorter for PancakeSort {
     }
 
     fn reset_state(&mut self) {
-        self.curr_size = 0;
-        self.finished = false;
+        *self = Self::new(); // Reset all fields to their initial state.
     }
 
     fn is_finished(&self) -> bool {
         self.finished
+    }
+
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 }

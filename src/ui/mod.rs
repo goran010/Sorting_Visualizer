@@ -330,14 +330,15 @@ impl eframe::App for Visualizer<'_> {
                     if ui.button("📊 Load from CSV").clicked() {
                         self.load_numbers_from_csv();
                     }
+                    let (comparisons, swaps) = (self.sorter.comparisons(), self.sorter.swaps());
 
                     ui.horizontal(|ui| {
                         ui.label(
-                            egui::RichText::new(format!("🔍 Comparisons: {} ", self.comparisons))
+                            egui::RichText::new(format!("🔍 Comparisons: {} ", comparisons))
                                 .color(self.selected_theme.text_color()),
                         );
                         ui.label(
-                            egui::RichText::new(format!("🔄 Swaps: {} ", self.swaps))
+                            egui::RichText::new(format!("🔄 Swaps: {} ", swaps))
                                 .color(self.selected_theme.text_color()),
                         );
                         ui.label(
@@ -351,7 +352,7 @@ impl eframe::App for Visualizer<'_> {
                 });
             });
         });
-        // 🔹 Main sorting UI and visualization
+        // Main sorting UI and visualization
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if self.handle_algorithm_selection(ui) {

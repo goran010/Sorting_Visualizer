@@ -21,12 +21,16 @@ impl ButtonHandler {
     pub(crate) fn handle_reset(app: &mut Visualizer) {
         app.reset();
         app.numbers = app.original_numbers.clone();
+        app.comparisons = 0;
+        app.swaps = 0;
     }
 
     /// Resets `app` state, generates new numbers, and updates the initial state.
     pub(crate) fn handle_shuffle(app: &mut Visualizer) {
         app.reset();
         app.numbers = gen_random_vector(FLOOR, CEIL, VECTOR_SIZE);
+        app.comparisons = 0;
+        app.swaps = 0;
         app.original_numbers = app.numbers.clone();
         app.user_input = app
             .numbers

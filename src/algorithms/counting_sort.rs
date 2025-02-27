@@ -7,12 +7,13 @@ pub struct CountingSort {
     output: Vec<usize>,      // Partially sorted array.
     max_value: usize,        // Maximum value in the array.
     current_value: usize,    // Current value being placed.
-    output_index: usize,     // Position in output array.
     reason: Reasons,         // Current action reason.
     is_sorted: bool,         // Indicates if sorting is complete.
     step_phase: usize,       // Tracks which phase of the algorithm is running.
     array_index: usize,      // Tracks the index being modified in real-time.
     processing_index: usize, // Tracks which element is being processed.
+    swaps: usize,            // Indicates if the sorting is finished.
+    comparisons: usize,
 }
 
 impl Sorter for CountingSort {
@@ -23,12 +24,13 @@ impl Sorter for CountingSort {
             output: Vec::new(),
             max_value: 0,
             current_value: 0,
-            output_index: 0,
             reason: Reasons::Comparing,
             is_sorted: false,
             step_phase: 0,
             array_index: 0,
             processing_index: 0,
+            comparisons: 0,
+            swaps: 0,
         }
     }
 
@@ -54,6 +56,7 @@ impl Sorter for CountingSort {
                     self.counts[num] += 1;
                     self.reason = Reasons::Comparing;
                     self.processing_index += 1;
+                    self.comparisons += 1;
                     return false;
                 }
                 self.processing_index = 0;
@@ -68,10 +71,12 @@ impl Sorter for CountingSort {
                         self.counts[self.current_value] -= 1;
                         self.reason = Reasons::Switching;
                         play_beep();
+                        self.swaps += 1;
                         self.array_index += 1;
                         return false;
                     } else {
                         self.current_value += 1;
+                        self.comparisons += 1;
                     }
                 } else {
                     self.step_phase = 3;
@@ -89,19 +94,18 @@ impl Sorter for CountingSort {
     }
 
     fn reset_state(&mut self) {
-        self.counts.clear();
-        self.output.clear();
-        self.max_value = 0;
-        self.current_value = 0;
-        self.output_index = 0;
-        self.array_index = 0;
-        self.processing_index = 0;
-        self.is_sorted = false;
-        self.step_phase = 0;
+        *self = Self::new(); // Reset all fields to their initial state.
     }
 
     fn is_finished(&self) -> bool {
         self.is_sorted
+    }
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 
     /// Returns the special indices currently being processed.

@@ -6,6 +6,8 @@ pub struct CombSort {
     swapped: bool,
     i: usize,
     finished: bool,
+    swaps: usize, // Indicates if the sorting is finished.
+    comparisons: usize,
 }
 
 impl CombSort {
@@ -14,7 +16,9 @@ impl CombSort {
             gap: 0,
             swapped: true,
             i: 0,
-            finished: false,
+            finished: false, // Sorting is not finished initially.
+            comparisons: 0,
+            swaps: 0,
         }
     }
 
@@ -63,9 +67,11 @@ impl Sorter for CombSort {
         }
 
         if self.i + self.gap < array.len() {
-            play_beep(); // Play sound for visualization
+            self.comparisons += 1;
 
             if array[self.i] > array[self.i + self.gap] {
+                play_beep();
+                self.swaps += 1;
                 array.swap(self.i, self.i + self.gap);
                 self.swapped = true;
             }
@@ -79,13 +85,17 @@ impl Sorter for CombSort {
     }
 
     fn reset_state(&mut self) {
-        self.gap = 0;
-        self.swapped = true;
-        self.i = 0;
-        self.finished = false;
+        *self = Self::new(); // Reset all fields to their initial state.
     }
 
     fn is_finished(&self) -> bool {
         self.finished
+    }
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 }

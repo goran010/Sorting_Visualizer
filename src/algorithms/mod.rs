@@ -53,4 +53,8 @@ pub trait Sorter {
     /// # Returns
     /// `true` if sorting is complete, otherwise `false`.
     fn is_finished(&self) -> bool;
+
+    fn comparisons(&self) -> usize;
+
+    fn swaps(&self) -> usize;
 }

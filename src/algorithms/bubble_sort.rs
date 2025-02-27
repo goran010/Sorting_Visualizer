@@ -8,6 +8,8 @@ pub struct BubbleSort {
     needs_switch: bool,     // Indicates if a swap is needed between two elements.
     action_reason: Reasons, // Tracks the reason for the current action (Comparing or Switching).
     finished: bool,         // Indicates if the sorting is finished.
+    comparisons: usize,     // counts the number of comparisons
+    swaps: usize,           // Indicates if the sorting is finished.
 }
 
 impl Sorter for BubbleSort {
@@ -19,19 +21,20 @@ impl Sorter for BubbleSort {
             needs_switch: false,               // No swap needed initially.
             action_reason: Reasons::Comparing, // The action is "Comparing" initially.
             finished: false,                   // Sorting is not finished initially.
+            comparisons: 0,
+            swaps: 0, // Sorting is not finished initially.
         }
     }
 
     /// Executes a single step of the BubbleSort algorithm.
-    ///
     /// # Arguments
     /// * `array` - A mutable reference to the array being sorted.
-    ///
     /// # Returns
     /// * `true` if sorting is complete.
     /// * `false` if sorting is still in progress.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
         play_beep();
+        self.swaps += 1;
         let len = array.len();
 
         // Check if the sorting is complete.
@@ -55,6 +58,7 @@ impl Sorter for BubbleSort {
         // Perform the comparison and determine if a swap is needed.
         if let Some(idx) = self.index {
             if idx + 1 < len {
+                self.comparisons += 1;
                 self.needs_switch = array[idx] > array[idx + 1]; // Check if the elements need to be swapped.
                 self.action_reason = if self.needs_switch {
                     Reasons::Switching // If a swap is needed, set action to Switching.
@@ -65,7 +69,9 @@ impl Sorter for BubbleSort {
                 // Perform the swap if necessary.
                 if self.needs_switch {
                     play_beep();
+                    self.swaps += 1;
                     array.swap(idx, idx + 1); // Swap the elements at `idx` and `idx + 1`.
+
                     self.needs_switch = false; // Reset the flag after the swap.
                 }
             }
@@ -80,9 +86,7 @@ impl Sorter for BubbleSort {
     }
 
     /// Returns the current indices of the elements being compared or swapped.
-    ///
-    /// # Returns
-    /// A tuple `(current_index, next_index)` representing the indices of the elements being compared.
+    /// # Returns: A tuple `(current_index, next_index)` representing the indices of the elements being compared.
     fn special(&self) -> (usize, usize) {
         if let Some(idx) = self.index {
             (idx, idx + 1) // Return the current index and the next index being compared.
@@ -92,18 +96,20 @@ impl Sorter for BubbleSort {
     }
 
     /// Returns the current reason for the sorting action.
-    ///
-    /// # Returns
-    /// The `Reasons` enum indicating the current operation (Comparing or Switching).
+    /// # Returns: The `Reasons` enum indicating the current operation (Comparing or Switching).
     fn reason(&self) -> Reasons {
         self.action_reason // Return the current action reason.
     }
 
-    /// Returns whether the sorting process is complete.
-    ///
-    /// # Returns
-    /// `true` if sorting is finished, otherwise `false`.
+    /// # Returns : `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {
         self.finished
+    }
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 }

@@ -3,16 +3,20 @@ use crate::sound::play_beep;
 
 /// Represents the state of the Gnome Sort algorithm.
 pub struct GnomeSort {
-    index: usize,   // Current index in the array
-    finished: bool, // Indicates whether sorting is complete
+    index: usize, // Current index in the array
+    finished: bool,
+    comparisons: usize, // counts the number of comparisons
+    swaps: usize,       // Indicates whether sorting is complete
 }
 
 impl GnomeSort {
     /// Creates a new instance of the algorithm.
     pub fn new() -> Self {
         Self {
-            index: 1, // Starts at the second element, like in the C++ version
-            finished: false,
+            index: 1,        // Starts at the second element, like in the C++ version
+            finished: false, // Sorting is not finished initially.
+            comparisons: 0,
+            swaps: 0,
         }
     }
 }
@@ -53,7 +57,7 @@ impl Sorter for GnomeSort {
             return true;
         }
 
-        play_beep(); // Beep sound for visualization
+        self.comparisons += 1;
 
         if self.index == 0 {
             self.index += 1;
@@ -62,6 +66,8 @@ impl Sorter for GnomeSort {
         } else {
             array.swap(self.index, self.index - 1); // Swap elements
             self.index -= 1; // Move backward
+            self.swaps += 1;
+            play_beep();
         }
 
         false
@@ -69,12 +75,18 @@ impl Sorter for GnomeSort {
 
     /// Resets the algorithm state.
     fn reset_state(&mut self) {
-        self.index = 1;
-        self.finished = false;
+        *self = Self::new(); // Reset all fields to their initial state.
     }
 
     /// Checks if sorting is complete.
     fn is_finished(&self) -> bool {
         self.finished
+    }
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 }

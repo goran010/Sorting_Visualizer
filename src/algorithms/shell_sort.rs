@@ -5,6 +5,8 @@ pub struct ShellSort {
     gap: usize,
     i: usize,
     finished: bool,
+    swaps: usize, // Indicates if the sorting is finished.
+    comparisons: usize,
 }
 
 impl ShellSort {
@@ -12,7 +14,9 @@ impl ShellSort {
         Self {
             gap: 0,
             i: 0,
-            finished: false,
+            finished: false, // Sorting is not finished initially.
+            comparisons: 0,
+            swaps: 0,
         }
     }
 }
@@ -51,17 +55,22 @@ impl Sorter for ShellSort {
 
         if self.gap > 0 {
             if self.i < array.len() {
-                play_beep(); // Play sound for visualization
+                play_beep();
+                self.swaps += 1; // Play sound for visualization
 
                 let temp = array[self.i];
                 let mut j = self.i;
 
                 // Perform insertion sort within the gap
                 while j >= self.gap && array[j - self.gap] > temp {
+                    self.comparisons += 1;
                     array[j] = array[j - self.gap];
                     j -= self.gap;
-                }
 
+                    play_beep();
+                    self.swaps += 1;
+                }
+                self.comparisons += 1;
                 array[j] = temp;
                 self.i += 1; // Move to next element
             } else {
@@ -82,12 +91,17 @@ impl Sorter for ShellSort {
     }
 
     fn reset_state(&mut self) {
-        self.gap = 0;
-        self.i = 0;
-        self.finished = false;
+        *self = Self::new(); // Reset all fields to their initial state.
     }
 
     fn is_finished(&self) -> bool {
         self.finished
+    }
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 }

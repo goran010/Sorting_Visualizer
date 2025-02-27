@@ -6,6 +6,8 @@ pub struct OddEvenSort {
     odd_phase: bool,
     i: usize,
     finished: bool,
+    swaps: usize, // Indicates if the sorting is finished.
+    comparisons: usize,
 }
 
 impl OddEvenSort {
@@ -14,7 +16,9 @@ impl OddEvenSort {
             is_sorted: false,
             odd_phase: true,
             i: 1,
-            finished: false,
+            finished: false, // Sorting is not finished initially.
+            comparisons: 0,
+            swaps: 0,
         }
     }
 }
@@ -59,7 +63,8 @@ impl Sorter for OddEvenSort {
         }
 
         if self.i < array.len() - 1 {
-            play_beep(); // Sound effect for visualization
+            play_beep();
+            self.swaps += 1; // Sound effect for visualization
 
             if array[self.i] > array[self.i + 1] {
                 array.swap(self.i, self.i + 1);
@@ -73,13 +78,17 @@ impl Sorter for OddEvenSort {
     }
 
     fn reset_state(&mut self) {
-        self.is_sorted = false;
-        self.odd_phase = true;
-        self.i = 1;
-        self.finished = false;
+        *self = Self::new(); // Reset all fields to their initial state.
     }
 
     fn is_finished(&self) -> bool {
         self.finished
+    }
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 }

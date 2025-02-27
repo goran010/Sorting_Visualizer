@@ -9,11 +9,12 @@ pub struct MergeSort {
     temp: Vec<usize>, // Temporary array used during merging.
     reason: Reasons,  // Current action reason (Comparing or Switching).
     is_sorted: bool,  // Indicates whether the sorting process is complete.
+    swaps: usize,     // Indicates if the sorting is finished.
+    comparisons: usize,
 }
 
 impl MergeSort {
     /// Merges two sorted subarrays into a single sorted subarray.
-    ///
     /// # Arguments
     /// * `array` - The array containing the subarrays to be merged.
     /// * `start` - The starting index of the first subarray.
@@ -66,6 +67,8 @@ impl Sorter for MergeSort {
             temp: Vec::new(),           // Temporary array will be initialized during sorting.
             reason: Reasons::Comparing, // Initial action reason is Comparing.
             is_sorted: false,           // Sorting is not complete initially.
+            swaps: 0,                   // Indicates if the sorting is finished.
+            comparisons: 0,
         }
     }
 
@@ -105,6 +108,7 @@ impl Sorter for MergeSort {
             self.merge(array, start, mid, end);
             self.reason = Reasons::Switching; // Indicate that elements were switched.
             play_beep();
+            self.swaps += 1;
         }
 
         self.index += 2 * self.size; // Move to the next pair of subarrays.
@@ -113,11 +117,7 @@ impl Sorter for MergeSort {
 
     /// Resets the state of the MergeSort instance for a new sorting process.
     fn reset_state(&mut self) {
-        self.size = 1; // Reset the size to its initial value.
-        self.index = 0; // Reset the index tracker.
-        self.temp.clear(); // Clear the temporary array.
-        self.reason = Reasons::Comparing; // Reset the action reason.
-        self.is_sorted = false; // Sorting is no longer marked as complete.
+        *self = Self::new(); // Reset all fields to their initial state.
     }
 
     /// Returns the range of indices currently being processed.
@@ -136,5 +136,12 @@ impl Sorter for MergeSort {
     /// Checks if the sorting process is complete.
     fn is_finished(&self) -> bool {
         self.is_sorted
+    }
+    fn comparisons(&self) -> usize {
+        self.comparisons
+    }
+
+    fn swaps(&self) -> usize {
+        self.swaps
     }
 }
