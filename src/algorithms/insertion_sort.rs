@@ -7,8 +7,8 @@ pub struct InsertionSort {
     sorted_index: usize,  // Tracks the index of the last sorted element.
     reason: Reasons,      // The reason for the current action (e.g., Comparing or Inserting).
     is_sorted: bool,      // Indicates whether the sorting is complete.
-    swaps: usize,         // Indicates if the sorting is finished.
-    comparisons: usize,
+    swaps: usize,         // Counts the number of swaps performed.
+    comparisons: usize,   // Counts the number of comparisons performed.
 }
 
 impl Sorter for InsertionSort {
@@ -25,63 +25,62 @@ impl Sorter for InsertionSort {
     }
 
     /// Returns the indices currently being compared or moved.
-    /// # Returns A tuple of `(current_index, sorted_index)` representing the indices involved.
     fn special(&self) -> (usize, usize) {
         (self.current_index, self.sorted_index) // Return the indices of the current and sorted elements.
     }
 
     /// Returns the reason for the current operation.
-    /// # Returns The `Reasons` enum indicating whether the current action is Comparing or Inserting.
     fn reason(&self) -> Reasons {
         self.reason // Return the current reason for the operation.
     }
 
     /// Executes a single step of the InsertionSort algorithm.
-    /// # Arguments
-    /// * `array` - A mutable reference to the array being sorted.
-    /// # Returns
-    /// * `true` if sorting is complete.
-    /// * `false` if sorting is still in progress.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
-        // Check if the current index has reached the end of the array.
-        if self.current_index >= array.len() {
-            self.is_sorted = true; // Mark the sorting as complete.
-            return true; // Indicate that the sorting process is finished.
+        // If sorting is finished, return true.
+        if self.is_sorted {
+            return true;
         }
 
-        let mut i = self.current_index; // Initialize with the current index.
+        if self.current_index >= array.len() {
+            self.is_sorted = true; // Mark sorting as complete.
+            return true;
+        }
 
-        // Compare and insert the element into the correct position in the sorted portion.
-        while i > 0 && array[i] < array[i - 1] {
-            array.swap(i, i - 1); // Swap elements to maintain sorted order.
-            i -= 1; // Move to the previous element in the sorted portion.
+        let mut i = self.current_index;
+        let value = array[i];
 
-            // Update the reason to "Comparing" after each swap.
+        // Compare and insert the element into the correct position.
+        while i > 0 && array[i - 1] > value {
+            self.comparisons += 1; // Increment comparisons
+
+            array[i] = array[i - 1]; // Shift element to the right
+            i -= 1;
             self.reason = Reasons::Comparing;
         }
 
-        // Move to the next element for the next iteration.
-        self.current_index += 1;
+        // If an actual swap occurred, update the array and play a beep
+        if i != self.current_index {
+            array[i] = value;
+            self.swaps += 1; // Increment swaps
+            self.reason = Reasons::Switching;
+            play_beep();
+        }
 
-        // Update the reason to "Switching" after insertion.
-        self.reason = Reasons::Switching;
-        play_beep();
-        self.swaps += 1;
+        self.current_index += 1; // Move to the next element
 
-        false // Sorting is not complete yet, so return false.
+        false // Sorting is not complete yet.
     }
 
     /// Resets the state of the InsertionSort algorithm.
-    /// Resets `current_index` to 1 and marks the sorting process as not complete.
     fn reset_state(&mut self) {
         *self = Self::new(); // Reset all fields to their initial state.
     }
 
     /// Checks whether the sorting process is complete.
-    /// # Returns `true` if sorting is finished, otherwise `false`.
     fn is_finished(&self) -> bool {
         self.is_sorted
     }
+
     fn comparisons(&self) -> usize {
         self.comparisons
     }

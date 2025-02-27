@@ -32,8 +32,8 @@ pub(crate) struct Visualizer<'a> {
     total_elapsed_time: f64, // Total elapsed time of the sorting process.
     selected_theme: Theme, // The currently selected theme.
     user_input: String,
-    comparisons: usize, // 🔹 Initialize comparisons
-    swaps: usize,       // 🔹 Initialize swaps
+    comparisons: usize, //  Initialize comparisons
+    swaps: usize,       //  Initialize swaps
 }
 
 impl<'a> Default for Visualizer<'a> {
@@ -214,7 +214,7 @@ impl Visualizer<'_> {
     }
 
     fn process_user_input(&mut self) {
-        // 🔹 Parse user input: Split by commas, trim spaces, convert to numbers
+        //  Parse user input: Split by commas, trim spaces, convert to numbers
         let new_numbers: Vec<usize> = self
             .user_input
             .split(',')
@@ -296,7 +296,7 @@ impl eframe::App for Visualizer<'_> {
         style.visuals.panel_fill = self.selected_theme.background_color();
         ctx.set_style(style);
 
-        // 🔹 Numbers input field moved to the top
+        //  Numbers input field moved to the top
         egui::TopBottomPanel::top("numbers_input").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 // Horizontal layout for input field and button
@@ -318,11 +318,11 @@ impl eframe::App for Visualizer<'_> {
             }
         });
 
-        // 🔹 Sorting control panel at the top (below numbers input)
+        //  Sorting control panel at the top (below numbers input)
         egui::TopBottomPanel::top("timer_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
-                    // 🔹 "Load from File" button next to elapsed time
+                    //  "Load from File" button next to elapsed time
                     if ui.button("📂 Load from txt").clicked() {
                         self.load_numbers_from_file();
                     }

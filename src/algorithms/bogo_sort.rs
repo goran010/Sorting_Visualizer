@@ -40,9 +40,7 @@ impl Sorter for BogoSort {
     }
 
     /// Returns the current reason for the action ("Comparing" or "Switching").
-    ///
-    /// # Returns
-    /// The `Reasons` enum indicating the current operation.
+    /// # Returns The `Reasons` enum indicating the current operation.
     fn reason(&self) -> Reasons {
         self.reason // Returns whether we're comparing or switching elements.
     }

@@ -3,61 +3,59 @@ use crate::sound::play_beep;
 
 /// Represents the state of the Cocktail Shaker Sort algorithm.
 pub struct CocktailSort {
-    start: usize,  // Start index of the array
-    end: usize,    // End index of the array
-    swapped: bool, // Indicates whether elements were swapped
-    forward: bool, // Sorting direction (true = forward, false = backward)
+    start: usize,
+    end: usize,
+    swapped: bool,
+    forward: bool,
     finished: bool,
-    comparisons: usize, // counts the number of comparisons
-    swaps: usize,       // Indicates if sorting is complete
+    current: usize,
+    comparisons: usize,
+    swaps: usize,
 }
 
 impl CocktailSort {
-    /// Creates a new instance of the algorithm.
     pub fn new() -> Self {
         Self {
             start: 0,
-            end: usize::MAX, // Will be set correctly when sorting starts
-            swapped: true,
+            end: 0,
+            swapped: false,
             forward: true,
-            finished: false, // Sorting is not finished initially.
+            finished: false,
+            current: 0,
             comparisons: 0,
             swaps: 0,
         }
     }
 
-    /// Properly initializes sorting parameters based on the array length.
     fn initialize(&mut self, array_len: usize) {
-        if array_len == 0 {
+        if array_len <= 1 {
             self.finished = true;
-            return;
+        } else {
+            self.start = 0;
+            self.end = array_len - 1;
+            self.swapped = false;
+            self.forward = true;
+            self.current = 0;
+            self.finished = false;
         }
-        self.start = 0;
-        self.end = array_len.saturating_sub(1); // Ensure valid range
-        self.swapped = true;
-        self.forward = true;
-        self.finished = false;
     }
 }
 
 impl Sorter for CocktailSort {
-    /// Initializes sorting.
     fn new() -> Self {
         Self::new()
     }
 
-    /// Returns the indices currently being compared or swapped.
     fn special(&self) -> (usize, usize) {
         if self.finished || self.start >= self.end {
             (usize::MAX, usize::MAX)
         } else if self.forward {
-            (self.start, self.start + 1)
+            (self.current, self.current + 1)
         } else {
-            (self.end - 1, self.end)
+            (self.current - 1, self.current)
         }
     }
 
-    /// Returns the reason for the current action.
     fn reason(&self) -> Reasons {
         if self.finished {
             Reasons::Comparing
@@ -66,72 +64,93 @@ impl Sorter for CocktailSort {
         }
     }
 
-    /// Executes a single step of the Cocktail Shaker Sort algorithm.
     fn step(&mut self, array: &mut Vec<usize>) -> bool {
-        if self.finished {
-            return true;
-        }
-
-        if self.end == 0 {
-            // Ensure proper initialization
-            self.initialize(array.len());
-        }
-
-        // If no swaps occurred in the last full pass, sorting is done
-        if !self.swapped {
+        // Early return for empty or single-element arrays
+        if array.is_empty() || array.len() == 1 {
             self.finished = true;
             return true;
         }
 
-        self.swapped = false;
+        // Initialize if not yet done
+        if self.end == 0 {
+            self.initialize(array.len());
+            return false;
+        }
 
+        // Check if we're done
+        if self.finished || self.start >= self.end {
+            self.finished = true;
+            return true;
+        }
+
+        // Perform a single step of the sorting algorithm
+        self.comparisons += 1;
+        
         if self.forward {
-            // Moves from left to right (Bubble Sort style)
-            for i in self.start..self.end {
-                self.comparisons += 1;
-                if array[i] > array[i + 1] {
-                    array.swap(i, i + 1);
-                    play_beep(); // Beep only on swap
+            // Forward pass
+            if self.current < self.end {
+                if array[self.current] > array[self.current + 1] {
+                    array.swap(self.current, self.current + 1);
+                    play_beep();
                     self.swaps += 1;
                     self.swapped = true;
                 }
-            }
-            if self.end > 0 {
-                self.end -= 1; // Prevent out-of-bounds error
+                
+                self.current += 1;
+                
+                // If we reached the end of the current forward pass
+                if self.current == self.end {
+                    self.end -= 1;
+                    self.forward = false;
+                    self.current = self.end;
+                }
             }
         } else {
-            // Moves from right to left
-            for i in (self.start..self.end).rev() {
-                self.comparisons += 1;
-                if array[i] < array[i - 1] {
-                    array.swap(i, i - 1);
-                    play_beep(); // Beep only on swap
+            // Backward pass
+            if self.current > self.start {
+                if array[self.current - 1] > array[self.current] {
+                    array.swap(self.current - 1, self.current);
+                    play_beep();
                     self.swaps += 1;
                     self.swapped = true;
                 }
+                
+                self.current -= 1;
+                
+                // If we reached the start of the current backward pass
+                if self.current == self.start {
+                    self.start += 1;
+                    
+                    // Check if we didn't swap anything in the complete pass
+                    if !self.swapped {
+                        self.finished = true;
+                        return true;
+                    }
+                    
+                    // Start a new forward pass and reset swapped flag
+                    self.forward = true;
+                    self.swapped = false;
+                    self.current = self.start;
+                }
             }
-            self.start += 1;
         }
 
-        // If no swaps occurred in the entire forward and backward pass, finish sorting
-        if !self.swapped {
+        // Check if we're done
+        if self.start >= self.end {
             self.finished = true;
         }
 
-        // Change direction
-        self.forward = !self.forward;
-        false
+        self.finished
     }
 
-    /// Resets the algorithm state.
     fn reset_state(&mut self) {
-        *self = Self::new(); // Reset all fields to their initial state.
+        *self = Self::new();
     }
 
-    /// Checks if sorting is complete.
     fn is_finished(&self) -> bool {
         self.finished
     }
+
     fn comparisons(&self) -> usize {
         self.comparisons
     }
