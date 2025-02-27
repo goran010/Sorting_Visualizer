@@ -1,18 +1,19 @@
-use rodio::{Decoder, OutputStream, Sink};
-use std::fs::File;
-use std::io::BufReader;
-use std::thread;
+use rodio::{source::SineWave, OutputStream, Sink, Source}; 
 use std::time::Duration;
+use std::thread;
 
-/// Plays a beep sound using `beep.wav`
 pub fn play_beep() {
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let sink = Sink::try_new(&stream_handle).expect("Failed to create audio sink");
+    if let Ok((_stream, stream_handle)) = OutputStream::try_default() {
+        let sink = Sink::try_new(&stream_handle).unwrap();
+        let source = SineWave::new(1000.0) // 1000 Hz tone
+            .take_duration(Duration::from_millis(200)) 
+            .amplify(0.2); // Reduce volume
 
-    let file = File::open("sound.wav").expect("Failed to open sound.wav");
-    let source = Decoder::new(BufReader::new(file)).expect("Failed to decode WAV file");
-
-    sink.append(source);
-    sink.sleep_until_end(); // Ensures the sound plays fully before proceeding
-    thread::sleep(Duration::from_millis(25));
+        sink.append(source);
+        thread::sleep(Duration::from_millis(50)); // Ensure sound finishes
+    } else {
+        println!("⚠ Failed to initialize audio. Falling back to system beep.");
+        print!("\x07");
+    }
 }
+
