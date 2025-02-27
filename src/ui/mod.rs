@@ -225,13 +225,16 @@ impl Visualizer<'_> {
     }
     /// Opens a file dialog, reads numbers from a file, and updates the numbers field.
     fn load_numbers_from_file(&mut self) {
-        if let Some(path) = FileDialog::new().pick_file() {
-            if let Ok(contents) = fs::read_to_string(path) {
+        if let Some(path) = FileDialog::new()
+            .add_filter("Text Files", &["txt"]) // Add filter for text files
+            .pick_file()
+        {
+            if let Ok(contents) = fs::read_to_string(&path) {
                 let new_numbers: Vec<usize> = contents
                     .split(',')
                     .filter_map(|s| s.trim().parse::<usize>().ok())
                     .collect();
-
+    
                 if !new_numbers.is_empty() {
                     self.numbers = new_numbers.clone();
                     self.original_numbers = new_numbers;
@@ -245,6 +248,30 @@ impl Visualizer<'_> {
             }
         }
     }
+
+    fn load_numbers_from_csv(&mut self) {
+        if let Some(path) = FileDialog::new().add_filter("CSV Files", &["csv"]).pick_file() {
+            if let Ok(contents) = fs::read_to_string(path) {
+                let new_numbers: Vec<usize> = contents
+                    .lines() // Split by lines
+                    .flat_map(|line| line.split(','))
+                    .filter_map(|s| s.trim().parse::<usize>().ok())
+                    .collect();
+    
+                if !new_numbers.is_empty() {
+                    self.numbers = new_numbers.clone();
+                    self.original_numbers = new_numbers;
+                    self.user_input = self
+                        .numbers
+                        .iter()
+                        .map(|n| n.to_string())
+                        .collect::<Vec<_>>()
+                        .join(",");
+                }
+            }
+        }
+    }
+
     /// Resets the visualizer state and timer.
     fn reset(&mut self) {
         self.state = State::Start;
@@ -264,13 +291,20 @@ impl eframe::App for Visualizer<'_> {
 
         // 🔹 Numbers input field moved to the top
         egui::TopBottomPanel::top("numbers_input").show(ctx, |ui| {
-            ui.label("Numbers:");
-            ui.add_sized(
-                [ui.available_width(), 30.0], // Full width with a fixed height
-                egui::TextEdit::singleline(&mut self.user_input),
-            );
-
-            // Update numbers when Enter is pressed
+            ui.horizontal(|ui| { // Horizontal layout for input field and button
+                ui.label("Numbers:");
+                ui.add_sized(
+                    [ui.available_width() - 60.0, 30.0], // Width and height of the input field
+                    egui::TextEdit::singleline(&mut self.user_input),
+                );
+        
+                // Enter button for user input
+                if ui.button("Select").clicked() {
+                    self.process_user_input(); // Process user input
+                }
+            });
+        
+            // User can press Enter to submit input
             if ui.input(|i| i.key_pressed(egui::Key::Enter)) {
                 self.process_user_input();
             }
@@ -281,8 +315,12 @@ impl eframe::App for Visualizer<'_> {
             ui.horizontal(|ui| {
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
                     // 🔹 "Load from File" button next to elapsed time
-                    if ui.button("📂 Load from File").clicked() {
+                    if ui.button("📂 Load from txt").clicked() {
                         self.load_numbers_from_file();
+                    }
+
+                    if ui.button("📊 Load from CSV").clicked() {
+                        self.load_numbers_from_csv();
                     }
 
                     ui.label(
