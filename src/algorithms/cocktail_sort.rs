@@ -85,7 +85,7 @@ impl Sorter for CocktailSort {
 
         // Perform a single step of the sorting algorithm
         self.comparisons += 1;
-        
+
         if self.forward {
             // Forward pass
             if self.current < self.end {
@@ -95,9 +95,9 @@ impl Sorter for CocktailSort {
                     self.swaps += 1;
                     self.swapped = true;
                 }
-                
+
                 self.current += 1;
-                
+
                 // If we reached the end of the current forward pass
                 if self.current == self.end {
                     self.end -= 1;
@@ -114,19 +114,19 @@ impl Sorter for CocktailSort {
                     self.swaps += 1;
                     self.swapped = true;
                 }
-                
+
                 self.current -= 1;
-                
+
                 // If we reached the start of the current backward pass
                 if self.current == self.start {
                     self.start += 1;
-                    
+
                     // Check if we didn't swap anything in the complete pass
                     if !self.swapped {
                         self.finished = true;
                         return true;
                     }
-                    
+
                     // Start a new forward pass and reset swapped flag
                     self.forward = true;
                     self.swapped = false;

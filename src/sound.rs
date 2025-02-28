@@ -1,4 +1,4 @@
-use rodio::{OutputStream, Sink, Source, source::SineWave};
+use rodio::{source::SineWave, OutputStream, Sink, Source};
 use std::time::Duration;
 
 pub fn play_beep() {
@@ -8,8 +8,8 @@ pub fn play_beep() {
     // Attempt to initialize Rodio output stream
     if let Ok((_stream, stream_handle)) = OutputStream::try_default() {
         let sink = Sink::try_new(&stream_handle).unwrap();
-        
-        let source = SineWave::new(800.0) // Lower frequency (e.g., 800Hz)
+
+        let source = SineWave::new(300.0)
             .take_duration(Duration::from_millis(150)) // Play for 150ms
             .amplify(0.3); // Reduce volume
 

@@ -24,7 +24,11 @@ impl CombSort {
 
     fn get_next_gap(gap: usize) -> usize {
         let new_gap = (gap * 10) / 13;
-        if new_gap < 1 { 1 } else { new_gap }
+        if new_gap < 1 {
+            1
+        } else {
+            new_gap
+        }
     }
 }
 

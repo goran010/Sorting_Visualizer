@@ -1,4 +1,4 @@
-use rand::{Rng, distributions::Uniform};
+use rand::{distributions::Uniform, Rng};
 
 /// Generates a random vector of integers within a specified range.
 /// # Arguments

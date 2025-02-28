@@ -4,20 +4,20 @@ use rfd::FileDialog;
 use std::fs;
 use strum::IntoEnumIterator;
 
-use self::constants::{CEIL, FLOOR, Theme, VECTOR_SIZE};
+use self::constants::{Theme, CEIL, FLOOR, VECTOR_SIZE};
 use crate::algorithms::{
-    Reasons, Sorter, bogo_sort::BogoSort, bubble_sort::BubbleSort, cocktail_sort::CocktailSort,
-    comb_sort::CombSort, counting_sort::CountingSort, gnome_sort::GnomeSort, heap_sort::HeapSort,
+    bogo_sort::BogoSort, bubble_sort::BubbleSort, cocktail_sort::CocktailSort, comb_sort::CombSort,
+    counting_sort::CountingSort, gnome_sort::GnomeSort, heap_sort::HeapSort,
     insertion_sort::InsertionSort, merge_sort::MergeSort, odd_even_sort::OddEvenSort,
     pancake_sort::PancakeSort, quick_sort::QuickSort, selection_sort::SelectionSort,
-    shell_sort::ShellSort,
+    shell_sort::ShellSort, Reasons, Sorter,
 };
 use crate::random::gen_random_vector;
-use crate::types::{Algorithms, STEP_DELAY, State};
+use crate::types::{Algorithms, State, STEP_DELAY};
 use buttons::ButtonHandler;
 use eframe::{
     egui::{self, Button, ComboBox, Ui},
-    epaint::{Color32, vec2},
+    epaint::{vec2, Color32},
 };
 use std::{thread, time::Instant};
 

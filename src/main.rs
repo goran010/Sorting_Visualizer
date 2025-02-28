@@ -1,4 +1,4 @@
-use eframe::{NativeOptions, epaint::Vec2, run_native};
+use eframe::{epaint::Vec2, run_native, NativeOptions};
 
 mod algorithms;
 mod random;
