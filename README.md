@@ -2,4 +2,4 @@
 
 This is a university project that demonstrates visualizations of sorting algorithms implemented in Rust.
 
-[demo video](video.mp4)
+[demo video](demo-video.mp4)
